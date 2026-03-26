@@ -1,0 +1,524 @@
+{
+  "cards": [
+    {
+      "id": "spades_ace",
+      "suit": "spades",
+      "rank": "A",
+      "value": 1,
+      "text": "黑桃A：致命一击\n造成3点伤害",
+      "type": "attack",
+      "power": 3,
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_2",
+      "suit": "spades",
+      "rank": "2",
+      "value": 2,
+      "text": "黑桃2：快速打击\n造成2点伤害",
+      "type": "attack",
+      "power": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "spades_3",
+      "suit": "spades",
+      "rank": "3",
+      "value": 3,
+      "text": "黑桃3：连击\n造成2点伤害，可连击2次",
+      "type": "attack",
+      "power": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "spades_4",
+      "suit": "spades",
+      "rank": "4",
+      "value": 4,
+      "text": "黑桃4：防御姿态\n获得2点护甲",
+      "type": "defense",
+      "power": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "spades_5",
+      "suit": "spades",
+      "rank": "5",
+      "value": 5,
+      "text": "黑桃5：暗影步\n抽1张牌",
+      "type": "special",
+      "power": 0,
+      "rarity": "common"
+    },
+    {
+      "id": "spades_6",
+      "suit": "spades",
+      "rank": "6",
+      "value": 6,
+      "text": "黑桃6：毒刃\n造成1点伤害，附加中毒",
+      "type": "attack",
+      "power": 1,
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_7",
+      "suit": "spades",
+      "rank": "7",
+      "value": 7,
+      "text": "黑桃7：偷袭\n造成2点伤害，无视护甲",
+      "type": "attack",
+      "power": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_8",
+      "suit": "spades",
+      "rank": "8",
+      "value": 8,
+      "text": "黑桃8：治疗药水\n恢复3点生命",
+      "type": "heal",
+      "power": 3,
+      "rarity": "common"
+    },
+    {
+      "id": "spades_9",
+      "suit": "spades",
+      "rank": "9",
+      "value": 9,
+      "text": "黑桃9：重击\n造成4点伤害，需要1回合准备",
+      "type": "attack",
+      "power": 4,
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_10",
+      "suit": "spades",
+      "rank": "10",
+      "value": 10,
+      "text": "黑桃10：旋风斩\n对所有敌人造成2点伤害",
+      "type": "attack",
+      "power": 2,
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_jack",
+      "suit": "spades",
+      "rank": "J",
+      "value": 11,
+      "text": "黑桃J：骑士冲锋\n造成3点伤害，获得1点护甲",
+      "type": "attack",
+      "power": 3,
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_queen",
+      "suit": "spades",
+      "rank": "Q",
+      "value": 12,
+      "text": "黑桃Q：女王祝福\n恢复2点生命，抽1张牌",
+      "type": "special",
+      "power": 0,
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_king",
+      "suit": "spades",
+      "rank": "K",
+      "value": 13,
+      "text": "黑桃K：王者归来\n造成5点伤害，恢复2点生命",
+      "type": "attack",
+      "power": 5,
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_ace",
+      "suit": "hearts",
+      "rank": "A",
+      "value": 1,
+      "text": "红桃A：生命之泉\n恢复4点生命",
+      "type": "heal",
+      "power": 4,
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_2",
+      "suit": "hearts",
+      "rank": "2",
+      "value": 2,
+      "text": "红桃2：轻伤治疗\n恢复2点生命",
+      "type": "heal",
+      "power": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "hearts_3",
+      "suit": "hearts",
+      "rank": "3",
+      "value": 3,
+      "text": "红桃3：群体治疗\n所有友方恢复1点生命",
+      "type": "heal",
+      "power": 1,
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_4",
+      "suit": "hearts",
+      "rank": "4",
+      "value": 4,
+      "text": "红桃4：护盾术\n获得3点护甲",
+      "type": "defense",
+      "power": 3,
+      "rarity": "common"
+    },
+    {
+      "id": "hearts_5",
+      "suit": "hearts",
+      "rank": "5",
+      "value": 5,
+      "text": "红桃5：幸运符\n抽2张牌",
+      "type": "special",
+      "power": 0,
+      "rarity": "common"
+    },
+    {
+      "id": "hearts_6",
+      "suit": "hearts",
+      "rank": "6",
+      "value": 6,
+      "text": "红桃6：净化术\n移除所有负面效果",
+      "type": "special",
+      "power": 0,
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_7",
+      "suit": "hearts",
+      "rank": "7",
+      "value": 7,
+      "text": "红桃7：生命链接\n下次攻击会恢复等量生命",
+      "type": "special",
+      "power": 0,
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_8",
+      "suit": "hearts",
+      "rank": "8",
+      "value": 8,
+      "text": "红桃8：复活术\n恢复5点生命，获得1点护甲",
+      "type": "heal",
+      "power": 5,
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_9",
+      "suit": "hearts",
+      "rank": "9",
+      "value": 9,
+      "text": "红桃9：神圣护盾\n获得5点护甲",
+      "type": "defense",
+      "power": 5,
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_10",
+      "suit": "hearts",
+      "rank": "10",
+      "value": 10,
+      "text": "红桃10：大治疗\n恢复6点生命",
+      "type": "heal",
+      "power": 6,
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_jack",
+      "suit": "hearts",
+      "rank": "J",
+      "value": 11,
+      "text": "红桃J：圣光守护\n获得2点护甲，恢复1点生命",
+      "type": "defense",
+      "power": 0,
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_queen",
+      "suit": "hearts",
+      "rank": "Q",
+      "value": 12,
+      "text": "红桃Q：女王恩典\n恢复3点生命，抽1张牌",
+      "type": "heal",
+      "power": 3,
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_king",
+      "suit": "hearts",
+      "rank": "K",
+      "value": 13,
+      "text": "红桃K：神圣之王\n恢复8点生命，获得2点护甲",
+      "type": "heal",
+      "power": 8,
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_ace",
+      "suit": "diamonds",
+      "rank": "A",
+      "value": 1,
+      "text": "方块A：财富之力\n获得3金币，造成2点伤害",
+      "type": "special",
+      "power": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_2",
+      "suit": "diamonds",
+      "rank": "2",
+      "value": 2,
+      "text": "方块2：金币投掷\n造成1点伤害，获得1金币",
+      "type": "attack",
+      "power": 1,
+      "rarity": "common"
+    },
+    {
+      "id": "diamonds_3",
+      "suit": "diamonds",
+      "rank": "3",
+      "value": 3,
+      "text": "方块3：商业头脑\n抽1张牌，获得1金币",
+      "type": "special",
+      "power": 0,
+      "rarity": "common"
+    },
+    {
+      "id": "diamonds_4",
+      "suit": "diamonds",
+      "rank": "4",
+      "value": 4,
+      "text": "方块4：钻石护甲\n获得2点护甲",
+      "type": "defense",
+      "power": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "diamonds_5",
+      "suit": "diamonds",
+      "rank": "5",
+      "value": 5,
+      "text": "方块5：赌博\n50%概率造成5点伤害或恢复5点生命",
+      "type": "special",
+      "power": 0,
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_6",
+      "suit": "diamonds",
+      "rank": "6",
+      "value": 6,
+      "text": "方块6：投资\n获得2金币，下回合抽2张牌",
+      "type": "special",
+      "power": 0,
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_7",
+      "suit": "diamonds",
+      "rank": "7",
+      "value": 7,
+      "text": "方块7：钻石风暴\n造成3点伤害，获得2金币",
+      "type": "attack",
+      "power": 3,
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_8",
+      "suit": "diamonds",
+      "rank": "8",
+      "value": 8,
+      "text": "方块8：财富守护\n获得3点护甲，获得1金币",
+      "type": "defense",
+      "power": 0,
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_9",
+      "suit": "diamonds",
+      "rank": "9",
+      "value": 9,
+      "text": "方块9：黄金雨\n所有玩家获得2金币",
+      "type": "special",
+      "power": 0,
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_10",
+      "suit": "diamonds",
+      "rank": "10",
+      "value": 10,
+      "text": "方块10：钻石冲击\n造成4点伤害",
+      "type": "attack",
+      "power": 4,
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_jack",
+      "suit": "diamonds",
+      "rank": "J",
+      "value": 11,
+      "text": "方块J：商人护卫\n造成2点伤害，获得2点护甲",
+      "type": "attack",
+      "power": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_queen",
+      "suit": "diamonds",
+      "rank": "Q",
+      "value": 12,
+      "text": "方块Q：女王财富\n获得4金币，抽1张牌",
+      "type": "special",
+      "power": 0,
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_king",
+      "suit": "diamonds",
+      "rank": "K",
+      "value": 13,
+      "text": "方块K：钻石之王\n造成6点伤害，获得4金币",
+      "type": "attack",
+      "power": 6,
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_ace",
+      "suit": "clubs",
+      "rank": "A",
+      "value": 1,
+      "text": "梅花A：自然之力\n造成2点伤害，抽1张牌",
+      "type": "attack",
+      "power": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_2",
+      "suit": "clubs",
+      "rank": "2",
+      "value": 2,
+      "text": "梅花2：藤蔓缠绕\n造成1点伤害，敌人下回合无法攻击",
+      "type": "attack",
+      "power": 1,
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_3",
+      "suit": "clubs",
+      "rank": "3",
+      "value": 3,
+      "text": "梅花3：自然生长\n获得1点护甲，抽1张牌",
+      "type": "defense",
+      "power": 0,
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_4",
+      "suit": "clubs",
+      "rank": "4",
+      "value": 4,
+      "text": "梅花4：树皮防御\n获得2点护甲",
+      "type": "defense",
+      "power": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_5",
+      "suit": "clubs",
+      "rank": "5",
+      "value": 5,
+      "text": "梅花5：森林召唤\n抽2张牌",
+      "type": "special",
+      "power": 0,
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_6",
+      "suit": "clubs",
+      "rank": "6",
+      "value": 6,
+      "text": "梅花6：毒刺\n造成1点伤害，附加持续伤害",
+      "type": "attack",
+      "power": 1,
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_7",
+      "suit": "clubs",
+      "rank": "7",
+      "value": 7,
+      "text": "梅花7：野兽之力\n造成3点伤害，获得1点护甲",
+      "type": "attack",
+      "power": 3,
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_8",
+      "suit": "clubs",
+      "rank": "8",
+      "value": 8,
+      "text": "梅花8：自然恢复\n恢复2点生命",
+      "type": "heal",
+      "power": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_9",
+      "suit": "clubs",
+      "rank": "9",
+      "value": 9,
+      "text": "梅花9：元素爆发\n造成4点伤害",
+      "type": "attack",
+      "power": 4,
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_10",
+      "suit": "clubs",
+      "rank": "10",
+      "value": 10,
+      "text": "梅花10：森林守护\n获得4点护甲",
+      "type": "defense",
+      "power": 4,
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_jack",
+      "suit": "clubs",
+      "rank": "J",
+      "value": 11,
+      "text": "梅花J：森林战士\n造成2点伤害，恢复1点生命",
+      "type": "attack",
+      "power": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_queen",
+      "suit": "clubs",
+      "rank": "Q",
+      "value": 12,
+      "text": "梅花Q：自然女王\n恢复3点生命，抽1张牌",
+      "type": "heal",
+      "power": 3,
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_king",
+      "suit": "clubs",
+      "rank": "K",
+      "value": 13,
+      "text": "梅花K：森林之王\n造成5点伤害，获得3点护甲",
+      "type": "attack",
+      "power": 5,
+      "rarity": "legendary"
+    }
+  ]
+}

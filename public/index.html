@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Battle Arena - Strategic Card Game</title>
+    <meta name="description" content="A strategic card battle game with custom abilities and AI opponent">
+    <link rel="stylesheet" href="/src/styles/base.css">
+    <link rel="stylesheet" href="/src/styles/components.css">
+</head>
+<body>
+    <div id="app">
+        <div class="loading-screen">
+            <div class="loading-content">
+                <h1>⚔️ Card Battle Arena ⚔️</h1>
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <p>Loading game assets...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { GameBoard } from '/src/components/GameBoard.js';
+        import { GameEngine } from '/src/services/GameEngine.js';
+        import { CardManager } from '/src/services/CardManager.js';
+        import { AIService } from '/src/services/AIService.js';
+        import { StorageManager } from '/src/utils/StorageManager.js';
+
+        class CardBattleApp {
+            constructor() {
+                this.gameBoard = null;
+                this.gameEngine = null;
+                this.cardManager = null;
+                this.aiService = null;
+                this.storageManager = null;
+                this.isInitialized = false;
+            }
+
+            async init() {
+                try {
+                    this.showLoadingProgress(20);
+                    
+                    // Initialize services
+                    this.cardManager = new CardManager();
+                    await this.cardManager.loadCards();
+                    
+                    this.showLoadingProgress(40);
+                    
+                    this.aiService = new AIService();
+                    this.storageManager = new StorageManager();
+                    
+                    this.showLoadingProgress(60);
+                    
+                    // Initialize game engine
+                    this.gameEngine = new GameEngine();
+                    this.setupGameEngineEvents();
+                    
+                    this.showLoadingProgress(80);
+                    
+                    // Initialize game board
+                    const appContainer = document.getElementById('app');
+                    this.gameBoard = new GameBoard(appContainer);
+                    this.setupBoardEvents();
+                    
+                    this.showLoadingProgress(100);
+                    
+                    // Start the game
+                    setTimeout(() => {
+                        this.hideLoadingScreen();
+                        this.startGame();
+                    }, 500);
+                    
+                    this.isInitialized = true;
+                    
+                } catch (error) {
+                    console.error('Failed to initialize game:', error);
+                    this.showError('Game initialization failed. Please refresh the page.');
+                }
+            }
+
+            setupGameEngineEvents() {
+                this.gameEngine.on('gameStart', (data) => {
+                    console.log('Game started');
+                    this.gameBoard.updateGameState(data.state);
+                });
+
+                this.gameEngine.on('turnStart', (data) => {
+                    this.gameBoard.updateGameState(data.state);
+                    this.gameBoard.addLogEntry(`${data.player.name}'s turn begins`);
+                });
+
+                this.gameEngine.on('cardPlayed', (data) => {
+                    this.gameBoard.updateGameState(data.state);
+                    data.effects.forEach(effect => {
+                        this.gameBoard.addLogEntry(effect, data.player.id === 'player' ? 'player-action' : 'ai-action');
+                    });
+                });
+
+                this.gameEngine.on('cardsDrawn', (data) => {
+                    this.gameBoard.updateGameState(data.state);
+                    this.gameBoard.addLogEntry(`${data.player.name} drew ${data.cards.length} card(s)`);
+                });
+
+                this.gameEngine.on('turnEnd', (data) => {
+                    this.gameBoard.updateGameState(data.state);
+                    this.gameBoard.addLogEntry(`${data.player.name}'s turn ended`);
+                });
+
+                this.gameEngine.on('gameOver', (data) => {
+                    this.gameBoard.updateGameState(data.state);
+                    this.gameBoard.showGameOver(data.winner.id);
+                    this.gameBoard.addLogEntry(`Game Over! ${data.winner.name} wins!`);
+                });
+
+                this.gameEngine.on('gamePaused', (data) => {
+                    this.gameBoard.addLogEntry('Game paused');
+                });
+
+                this.gameEngine.on('gameResumed', (data) => {
+                    this.gameBoard.addLogEntry('Game resumed');
+                });
+            }
+
+            setupBoardEvents() {
+                this.gameBoard.on('action', (event) => {
+                    const { type } = event.detail;
+                    
+                    switch (type) {
+                        case 'drawCard':
+                            this.gameEngine.drawCard('player');
+                            break;
+                        case 'endTurn':
+                            this.gameEngine.endTurn();
+                            break;
+                        case 'restart':
+                            this.restart();
+                            break;
+                        case 'pause':
+                            this.gameEngine.pause();
+                            break;
+                    }
+                });
+            }
+
+            startGame() {
+                this.gameEngine.initialize(this.cardManager, this.aiService);
+                
+                // Try to load saved game
+                const savedGame = this.storageManager.loadGame();
+                if (savedGame && confirm('Found a saved game. Would you like to continue?')) {
+                    this.restoreGame(savedGame);
+                }
+            }
+
+            restart() {
+                this.gameBoard.hideGameOver();
+                this.gameEngine.restart();
+            }
+
+            restoreGame(savedData) {
+                // Implement game restoration logic
+                console.log('Restoring game from save data');
+            }
+
+            showLoadingProgress(percentage) {
+                const progressBar = document.querySelector('.loading-progress');
+                if (progressBar) {
+                    progressBar.style.width = `${percentage}%`;
+                }
+            }
+
+            hideLoadingScreen() {
+                const loadingScreen = document.querySelector('.loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                document.body.appendChild(errorDiv);
+            }
+        }
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new CardBattleApp();
+            app.init();
+            
+            // Make app available globally for debugging
+            window.gameApp = app;
+        });
+
+        // Service Worker registration for PWA capabilities
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

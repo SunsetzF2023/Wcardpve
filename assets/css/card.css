@@ -1,0 +1,317 @@
+/* 卡牌样式 */
+.card {
+    width: 120px;
+    height: 160px;
+    background: linear-gradient(135deg, #fff, #f3f4f6);
+    border: 2px solid #374151;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.card.selected {
+    border-color: #fbbf24;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+    transform: translateY(-8px);
+}
+
+.card.playable {
+    border-color: #4ade80;
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.6); }
+    50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.8); }
+}
+
+.card.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.card.disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 卡牌内容 */
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    position: relative;
+}
+
+.card-text {
+    flex: 1;
+    font-size: 0.8em;
+    line-height: 1.2;
+    color: #1f2937;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    margin: 5px 0;
+}
+
+/* 花色和数字 */
+.card-corner {
+    position: absolute;
+    font-size: 0.9em;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+
+.card-corner.top-left {
+    top: 5px;
+    left: 5px;
+}
+
+.card-corner.bottom-right {
+    bottom: 5px;
+    right: 5px;
+    transform: rotate(180deg);
+}
+
+.card-suit {
+    font-size: 1.2em;
+    margin-bottom: 2px;
+}
+
+.card-rank {
+    font-size: 0.8em;
+}
+
+/* 花色颜色 */
+.card-suit.hearts, .card-suit.diamonds {
+    color: #ef4444;
+}
+
+.card-suit.clubs, .card-suit.spades {
+    color: #1f2937;
+}
+
+/* 卡背样式 */
+.card-back {
+    background: linear-gradient(135deg, #1e40af, #3730a3);
+    border: 2px solid #1e3a8a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+}
+
+.card-back::before {
+    content: "🎴";
+}
+
+/* AI手牌（背面朝上） */
+#ai-hand .card {
+    cursor: default;
+}
+
+#ai-hand .card:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 战场上的卡牌 */
+.battlefield .card {
+    width: 100px;
+    height: 140px;
+}
+
+.battlefield .card-text {
+    font-size: 0.7em;
+}
+
+/* 卡牌状态指示器 */
+.card-status {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #fff;
+}
+
+.card-status.attack {
+    background: #ef4444;
+}
+
+.card-status.defense {
+    background: #3b82f6;
+}
+
+.card-status.special {
+    background: #a855f7;
+}
+
+/* 卡牌动画 */
+.card-enter {
+    animation: cardEnter 0.5s ease-out;
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) rotate(10deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotate(0);
+    }
+}
+
+.card-play {
+    animation: cardPlay 0.6s ease-out;
+}
+
+@keyframes cardPlay {
+    0% {
+        transform: scale(1) rotate(0);
+    }
+    50% {
+        transform: scale(1.2) rotate(5deg);
+    }
+    100% {
+        transform: scale(1) rotate(0);
+    }
+}
+
+.card-damage {
+    animation: cardDamage 0.5s ease-out;
+}
+
+@keyframes cardDamage {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-10px);
+    }
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+.card-heal {
+    animation: cardHeal 0.5s ease-out;
+}
+
+@keyframes cardHeal {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.1);
+        filter: brightness(1.5);
+    }
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+/* 伤害数字 */
+.damage-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    font-weight: bold;
+    color: #ef4444;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    animation: damageFloat 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.heal-number {
+    color: #4ade80;
+}
+
+@keyframes damageFloat {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -150%);
+    }
+}
+
+/* 卡牌稀有度边框 */
+.card.common {
+    border-color: #6b7280;
+}
+
+.card.rare {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.card.epic {
+    border-color: #a855f7;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+.card.legendary {
+    border-color: #fbbf24;
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+/* 响应式卡牌 */
+@media (max-width: 768px) {
+    .card {
+        width: 80px;
+        height: 110px;
+    }
+    
+    .card-text {
+        font-size: 0.7em;
+    }
+    
+    .card-corner {
+        font-size: 0.7em;
+    }
+    
+    .card-suit {
+        font-size: 1em;
+    }
+    
+    .battlefield .card {
+        width: 70px;
+        height: 100px;
+    }
+    
+    .battlefield .card-text {
+        font-size: 0.6em;
+    }
+}

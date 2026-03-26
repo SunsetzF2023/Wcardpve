@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\Default%20Settings]
+"PingIntervalSec"=dword:0000003c
+
+[HKEY_CURRENT_USER\Software\SimonTatham\PuTTY]
+"PingIntervalSec"=dword:0000003c

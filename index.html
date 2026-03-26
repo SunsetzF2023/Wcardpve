@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字对战扑克牌 - WCardPVE</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/card.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- 游戏标题 -->
+        <header class="game-header">
+            <h1>⚔️ 文字对战扑克牌 ⚔️</h1>
+            <div class="game-info">
+                <span id="turn-indicator">你的回合</span>
+                <span id="round-count">第 1 回合</span>
+            </div>
+        </header>
+
+        <!-- AI对手区域 -->
+        <section class="opponent-area">
+            <div class="player-info">
+                <h3>🤖 AI对手</h3>
+                <div class="health-bar">
+                    <div class="health-fill" id="ai-health" style="width: 100%"></div>
+                    <span class="health-text">HP: <span id="ai-hp">30</span>/30</span>
+                </div>
+            </div>
+            <div class="hand-area" id="ai-hand">
+                <!-- AI手牌将在这里显示 -->
+            </div>
+        </section>
+
+        <!-- 战场区域 -->
+        <section class="battlefield">
+            <div class="player-field" id="ai-field">
+                <h4>AI战场</h4>
+                <div class="cards-container" id="ai-cards"></div>
+            </div>
+            
+            <div class="vs-indicator">VS</div>
+            
+            <div class="player-field" id="player-field">
+                <h4>你的战场</h4>
+                <div class="cards-container" id="player-cards"></div>
+            </div>
+        </section>
+
+        <!-- 玩家区域 -->
+        <section class="player-area">
+            <div class="hand-area" id="player-hand">
+                <!-- 玩家手牌将在这里显示 -->
+            </div>
+            <div class="player-info">
+                <h3>👤 玩家</h3>
+                <div class="health-bar">
+                    <div class="health-fill" id="player-health" style="width: 100%"></div>
+                    <span class="health-text">HP: <span id="player-hp">30</span>/30</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 控制面板 -->
+        <section class="control-panel">
+            <button id="draw-card-btn" class="game-btn">抽牌</button>
+            <button id="end-turn-btn" class="game-btn">结束回合</button>
+            <button id="restart-btn" class="game-btn">重新开始</button>
+            <div class="deck-info">
+                牌堆剩余: <span id="deck-count">90</span> 张
+            </div>
+        </section>
+
+        <!-- 游戏日志 -->
+        <section class="game-log">
+            <h4>战斗日志</h4>
+            <div id="log-content" class="log-content"></div>
+        </section>
+    </div>
+
+    <!-- 游戏结束模态框 -->
+    <div id="game-over-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="game-result">游戏结束</h2>
+            <p id="game-message"></p>
+            <button id="play-again-btn" class="game-btn">再来一局</button>
+        </div>
+    </div>
+
+    <!-- 加载JavaScript -->
+    <script src="assets/data/cards.json"></script>
+    <script src="assets/js/card.js"></script>
+    <script src="assets/js/player.js"></script>
+    <script src="assets/js/ai.js"></script>
+    <script src="assets/js/game.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
