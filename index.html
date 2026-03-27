@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Battle Arena - Strategic Card Game</title>
     <meta name="description" content="A strategic card battle game with custom abilities and AI opponent">
-    <link rel="stylesheet" href="/src/styles/base.css">
-    <link rel="stylesheet" href="/src/styles/components.css">
+    <link rel="stylesheet" href="./src/styles/base.css">
+    <link rel="stylesheet" href="./src/styles/components.css">
 </head>
 <body>
     <div id="app">
@@ -22,11 +22,11 @@
     </div>
 
     <script type="module">
-        import { GameBoard } from '/src/components/GameBoard.js';
-        import { GameEngine } from '/src/services/GameEngine.js';
-        import { CardManager } from '/src/services/CardManager.js';
-        import { AIService } from '/src/services/AIService.js';
-        import { StorageManager } from '/src/utils/StorageManager.js';
+        import { GameBoard } from './src/components/GameBoard.js';
+        import { GameEngine } from './src/services/GameEngine.js';
+        import { CardManager } from './src/services/CardManager.js';
+        import { AIService } from './src/services/AIService.js';
+        import { StorageManager } from './src/utils/StorageManager.js';
 
         class CardBattleApp {
             constructor() {

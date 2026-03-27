@@ -11,7 +11,7 @@ export class CardManager {
 
     async loadCards() {
         try {
-            const response = await fetch('/assets/data/cards.json');
+            const response = await fetch('./assets/data/cards.json');
             const data = await response.json();
             this.cards = data.cards || data;
             this.isLoaded = true;
