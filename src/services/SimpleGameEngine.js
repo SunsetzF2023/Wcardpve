@@ -13,6 +13,8 @@ export class SimpleGameEngine {
                 health: 300,
                 maxHealth: 300,
                 armor: 0,
+                passvieShield: 0, // 被动护盾
+                damageBuff: 0, // 伤害增益
                 hand: [],
                 field: [], // 场上卡牌
                 deck: [],
@@ -24,6 +26,8 @@ export class SimpleGameEngine {
                 health: 300,
                 maxHealth: 300,
                 armor: 0,
+                passvieShield: 0, // 被动护盾
+                damageBuff: 0, // 伤害增益
                 hand: [],
                 field: [], // 场上卡牌
                 deck: [],
@@ -141,7 +145,11 @@ export class SimpleGameEngine {
                 this.applyShield(effect.shield, player);
                 break;
             case '盾':
-                this.applyShield(effect.shield, player);
+                if (effect.passive) {
+                    this.applyPassiveShield(effect, player);
+                } else {
+                    this.applyShield(effect.shield, player);
+                }
                 break;
             case '狙':
                 this.applyDamage(effect, opponent, player);
@@ -151,7 +159,7 @@ export class SimpleGameEngine {
                 this.applyShield(effect.shield, player);
                 break;
             case '幽':
-                // 隐身效果，这里简化处理
+                this.applyStealth(effect, player);
                 this.applyDamage(effect.damage, opponent, player);
                 break;
             case '护':
@@ -159,6 +167,16 @@ export class SimpleGameEngine {
                 break;
             case '炮':
                 this.applyDamage(effect.damage, opponent, player);
+                break;
+            case '燃':
+                this.applyBurn(effect, opponent);
+                break;
+            case '强':
+                this.applyDamage(effect, opponent, player);
+                this.applyDamageBuff(effect, player);
+                break;
+            case '愈':
+                this.applyHealing(effect.healing, player);
                 break;
         }
     }
@@ -244,6 +262,9 @@ export class SimpleGameEngine {
         // 更新场上最大容量
         this.updateMaxFieldSize();
         
+        // 处理燃烧效果
+        this.processBurnEffects();
+        
         this.emit('turnEnd', { player: currentPlayer });
         
         // 切换玩家
@@ -254,6 +275,21 @@ export class SimpleGameEngine {
         if (nextPlayer === 'ai') {
             setTimeout(() => this.executeAITurn(), 1500);
         }
+    }
+
+    processBurnEffects() {
+        const processBurn = (player) => {
+            if (player.burnStacks && player.burnStacks > 0) {
+                const burnDamage = player.burnStacks * 0.5; // 每层0.5点伤害
+                player.health = Math.max(0, player.health - burnDamage);
+                player.burnStacks = Math.max(0, player.burnStacks - 1); // 每触发一次减少1层
+                this.emit('burnDamage', { player, damage: burnDamage, remainingStacks: player.burnStacks });
+            }
+        };
+
+        // 处理双方燃烧效果
+        processBurn(this.state.player);
+        processBurn(this.state.ai);
     }
 
     updateMaxFieldSize() {
