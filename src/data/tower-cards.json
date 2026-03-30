@@ -1,0 +1,217 @@
+{
+  "cards": [
+    {
+      "id": "basic_tower",
+      "type": "兵",
+      "name": "基础塔",
+      "cost": 50,
+      "baseEffect": {
+        "damage": 10,
+        "range": 150,
+        "fireRate": 1000
+      },
+      "rarity": "common",
+      "description": "基础攻击塔，每秒造成10点伤害"
+    },
+    {
+      "id": "archer_tower",
+      "type": "弓",
+      "name": "弓箭塔",
+      "cost": 60,
+      "baseEffect": {
+        "damage": 8,
+        "range": 200,
+        "fireRate": 800
+      },
+      "rarity": "common",
+      "description": "远程弓箭塔，攻速较快"
+    },
+    {
+      "id": "freeze_tower",
+      "type": "冰",
+      "name": "冰冻塔",
+      "cost": 75,
+      "baseEffect": {
+        "damage": 5,
+        "range": 120,
+        "fireRate": 1500,
+        "slow": 0.5
+      },
+      "rarity": "rare",
+      "description": "冰冻塔，减速敌人50%并造成5点伤害"
+    },
+    {
+      "id": "cannon_tower",
+      "type": "炮",
+      "name": "火炮塔",
+      "cost": 100,
+      "baseEffect": {
+        "damage": 25,
+        "range": 100,
+        "fireRate": 2000,
+        "aoe": true
+      },
+      "rarity": "rare",
+      "description": "火炮塔，范围攻击造成25点伤害"
+    },
+    {
+      "id": "laser_tower",
+      "type": "光",
+      "name": "激光塔",
+      "cost": 150,
+      "baseEffect": {
+        "damage": 15,
+        "range": 200,
+        "fireRate": 500,
+        "piercing": true
+      },
+      "rarity": "epic",
+      "description": "激光塔，穿透攻击造成15点伤害"
+    },
+    {
+      "id": "tesla_tower",
+      "type": "电",
+      "name": "特斯拉塔",
+      "cost": 200,
+      "baseEffect": {
+        "damage": 8,
+        "range": 100,
+        "fireRate": 300,
+        "chain": 3
+      },
+      "rarity": "epic",
+      "description": "特斯拉塔，链式攻击最多3个目标"
+    },
+    {
+      "id": "poison_tower",
+      "type": "毒",
+      "name": "毒液塔",
+      "cost": 80,
+      "baseEffect": {
+        "damage": 3,
+        "range": 130,
+        "fireRate": 700,
+        "poison": 5,
+        "poisonDuration": 3000
+      },
+      "rarity": "rare",
+      "description": "毒液塔，造成持续伤害"
+    },
+    {
+      "id": "gold_tower",
+      "type": "金",
+      "name": "聚金塔",
+      "cost": 120,
+      "baseEffect": {
+        "damage": 2,
+        "range": 150,
+        "fireRate": 1000,
+        "goldGeneration": 5
+      },
+      "rarity": "epic",
+      "description": "聚金塔，每秒生成5金币"
+    },
+    {
+      "id": "slow_tower",
+      "type": "缓",
+      "name": "减速塔",
+      "cost": 65,
+      "baseEffect": {
+        "damage": 2,
+        "range": 180,
+        "fireRate": 2000,
+        "slow": 0.3
+      },
+      "rarity": "common",
+      "description": "减速塔，大幅降低敌人移动速度"
+    },
+    {
+      "id": "crit_tower",
+      "type": "暴",
+      "name": "暴击塔",
+      "cost": 90,
+      "baseEffect": {
+        "damage": 12,
+        "range": 160,
+        "fireRate": 1200,
+        "critChance": 0.2,
+        "critMultiplier": 2
+      },
+      "rarity": "rare",
+      "description": "暴击塔，20%几率造成双倍伤害"
+    },
+    {
+      "id": "multi_tower",
+      "type": "多",
+      "name": "多重塔",
+      "cost": 110,
+      "baseEffect": {
+        "damage": 6,
+        "range": 140,
+        "fireRate": 800,
+        "multishot": 3
+      },
+      "rarity": "epic",
+      "description": "多重塔，同时攻击3个目标"
+    },
+    {
+      "id": "life_tower",
+      "type": "生",
+      "name": "生命塔",
+      "cost": 70,
+      "baseEffect": {
+        "damage": 0,
+        "range": 100,
+        "fireRate": 0,
+        "healing": 2,
+        "healingRange": 100
+      },
+      "rarity": "rare",
+      "description": "生命塔，每秒为附近塔恢复2点生命值"
+    },
+    {
+      "id": "shield_tower",
+      "type": "盾",
+      "name": "护盾塔",
+      "cost": 85,
+      "baseEffect": {
+        "damage": 3,
+        "range": 120,
+        "fireRate": 1500,
+        "shield": 10,
+        "shieldDuration": 5000
+      },
+      "rarity": "rare",
+      "description": "护盾塔，为附近塔提供10点护盾"
+    },
+    {
+      "id": "speed_tower",
+      "type": "速",
+      "name": "加速塔",
+      "cost": 55,
+      "baseEffect": {
+        "damage": 0,
+        "range": 150,
+        "fireRate": 0,
+        "speedBuff": 0.5,
+        "buffRange": 150
+      },
+      "rarity": "common",
+      "description": "加速塔，提升附近塔50%攻速"
+    },
+    {
+      "id": "ultra_tower",
+      "type": "超",
+      "name": "超级塔",
+      "cost": 250,
+      "baseEffect": {
+        "damage": 50,
+        "range": 250,
+        "fireRate": 800,
+        "ultimate": true
+      },
+      "rarity": "legendary",
+      "description": "超级塔，终极技能造成巨额伤害"
+    }
+  ]
+}
