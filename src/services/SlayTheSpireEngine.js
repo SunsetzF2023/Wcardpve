@@ -303,6 +303,292 @@ export class SlayTheSpireEngine {
                         this.emit('passiveBurnApplied', { stacks: this.state.enemy.burnStacks });
                     }
                     break;
+                case 'divine_burn':
+                    // 与神同燃：玩家和所有敌人都获得燃烧
+                    if (!player.burnStacks) {
+                        player.burnStacks = 0;
+                    }
+                    player.burnStacks += (card.burn * ability.stacks);
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.burnStacks) {
+                            this.state.enemy.burnStacks = 0;
+                        }
+                        this.state.enemy.burnStacks += (card.burn * ability.stacks);
+                    }
+                    this.emit('divineBurnApplied', { playerStacks: player.burnStacks, enemyStacks: this.state.enemy?.burnStacks });
+                    break;
+                case 'phoenix_rebirth':
+                    // 灰烬中的永生：所有敌人获得燃烧+吸血
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.burnStacks) {
+                            this.state.enemy.burnStacks = 0;
+                        }
+                        this.state.enemy.burnStacks += (card.burn * ability.stacks);
+                        if (!this.state.enemy.lifesteal) {
+                            this.state.enemy.lifesteal = 0;
+                        }
+                        this.state.enemy.lifesteal += (card.lifesteal * ability.stacks);
+                        this.emit('phoenixRebirthApplied', { burnStacks: this.state.enemy.burnStacks, lifesteal: this.state.enemy.lifesteal });
+                    }
+                    break;
+                case 'eternal_winter':
+                    // 永恒寒冬：每回合对所有敌人施加冰冻
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.freezeStacks) {
+                            this.state.enemy.freezeStacks = 0;
+                        }
+                        this.state.enemy.freezeStacks += (card.freeze * ability.stacks);
+                        this.emit('eternalWinterApplied', { freezeStacks: this.state.enemy.freezeStacks });
+                    }
+                    break;
+                case 'venom_spread':
+                    // 毒液扩散：每回合对所有敌人施加中毒
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.poisonStacks) {
+                            this.state.enemy.poisonStacks = 0;
+                        }
+                        this.state.enemy.poisonStacks += (card.poison * ability.stacks);
+                        this.emit('venomSpreadApplied', { poisonStacks: this.state.enemy.poisonStacks });
+                    }
+                    break;
+                case 'thunder_storm':
+                    // 雷霆风暴：每回合对所有敌人施加雷电
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.lightningStacks) {
+                            this.state.enemy.lightningStacks = 0;
+                        }
+                        this.state.enemy.lightningStacks += (card.lightning * ability.stacks);
+                        this.emit('thunderStormApplied', { lightningStacks: this.state.enemy.lightningStacks });
+                    }
+                    break;
+                case 'void_embrace':
+                    // 虚空拥抱：每回合对所有敌人施加暗影
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.shadowStacks) {
+                            this.state.enemy.shadowStacks = 0;
+                        }
+                        this.state.enemy.shadowStacks += (card.shadow * ability.stacks);
+                        this.emit('voidEmbraceApplied', { shadowStacks: this.state.enemy.shadowStacks });
+                    }
+                    break;
+                case 'blood_cascade':
+                    // 血色瀑布：每回合对所有敌人施加流血
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.bleedStacks) {
+                            this.state.enemy.bleedStacks = 0;
+                        }
+                        this.state.enemy.bleedStacks += (card.bleed * ability.stacks);
+                        this.emit('bloodCascadeApplied', { bleedStacks: this.state.enemy.bleedStacks });
+                    }
+                    break;
+                case 'fragility_aura':
+                    // 脆弱光环：每回合对所有敌人施加虚弱
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.weakStacks) {
+                            this.state.enemy.weakStacks = 0;
+                        }
+                        this.state.enemy.weakStacks += (card.weak * ability.stacks);
+                        this.emit('fragilityAuraApplied', { weakStacks: this.state.enemy.weakStacks });
+                    }
+                    break;
+                case 'exposure_field':
+                    // 暴露领域：每回合对所有敌人施加易伤
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.vulnerableStacks) {
+                            this.state.enemy.vulnerableStacks = 0;
+                        }
+                        this.state.enemy.vulnerableStacks += (card.vulnerable * ability.stacks);
+                        this.emit('exposureFieldApplied', { vulnerableStacks: this.state.enemy.vulnerableStacks });
+                    }
+                    break;
+                case 'mute_field':
+                    // 静默领域：每回合对所有敌人施加沉默
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.silenceStacks) {
+                            this.state.enemy.silenceStacks = 0;
+                        }
+                        this.state.enemy.silenceStacks += (card.silence * ability.stacks);
+                        this.emit('muteFieldApplied', { silenceStacks: this.state.enemy.silenceStacks });
+                    }
+                    break;
+                case 'chaos_storm':
+                    // 混乱风暴：每回合对所有敌人施加混乱
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.confusionStacks) {
+                            this.state.enemy.confusionStacks = 0;
+                        }
+                        this.state.enemy.confusionStacks += (card.confusion * ability.stacks);
+                        this.emit('chaosStormApplied', { confusionStacks: this.state.enemy.confusionStacks });
+                    }
+                    break;
+                case 'terror_aura':
+                    // 恐怖光环：每回合对所有敌人施加恐惧
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.fearStacks) {
+                            this.state.enemy.fearStacks = 0;
+                        }
+                        this.state.enemy.fearStacks += (card.fear * ability.stacks);
+                        this.emit('terrorAuraApplied', { fearStacks: this.state.enemy.fearStacks });
+                    }
+                    break;
+                case 'chain_field':
+                    // 锁链领域：每回合对所有敌人施加束缚
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.bindStacks) {
+                            this.state.enemy.bindStacks = 0;
+                        }
+                        this.state.enemy.bindStacks += (card.bind * ability.stacks);
+                        this.emit('chainFieldApplied', { bindStacks: this.state.enemy.bindStacks });
+                    }
+                    break;
+                case 'rot_field':
+                    // 腐败领域：每回合对所有敌人施加腐朽
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.decayStacks) {
+                            this.state.enemy.decayStacks = 0;
+                        }
+                        this.state.enemy.decayStacks += (card.decay * ability.stacks);
+                        this.emit('rotFieldApplied', { decayStacks: this.state.enemy.decayStacks });
+                    }
+                    break;
+                case 'temporal_distortion':
+                    // 时空扭曲：每回合对所有敌人施加时间
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.timeStacks) {
+                            this.state.enemy.timeStacks = 0;
+                        }
+                        this.state.enemy.timeStacks += (card.time * ability.stacks);
+                        this.emit('temporalDistortionApplied', { timeStacks: this.state.enemy.timeStacks });
+                    }
+                    break;
+                case 'spirit_drain':
+                    // 灵魂汲取：每回合对所有敌人施加灵魂
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.soulStacks) {
+                            this.state.enemy.soulStacks = 0;
+                        }
+                        this.state.enemy.soulStacks += (card.soul * ability.stacks);
+                        this.emit('spiritDrainApplied', { soulStacks: this.state.enemy.soulStacks });
+                    }
+                    break;
+                case 'dream_eater':
+                    // 噬梦者：每回合对所有敌人施加噩梦
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.nightmareStacks) {
+                            this.state.enemy.nightmareStacks = 0;
+                        }
+                        this.state.enemy.nightmareStacks += (card.nightmare * ability.stacks);
+                        this.emit('dreamEaterApplied', { nightmareStacks: this.state.enemy.nightmareStacks });
+                    }
+                    break;
+                case 'holy_fire':
+                    // 圣火：每回合对所有敌人施加圣火（无视护盾的燃烧）
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.holyStacks) {
+                            this.state.enemy.holyStacks = 0;
+                        }
+                        this.state.enemy.holyStacks += (card.holy * ability.stacks);
+                        if (!this.state.enemy.burnStacks) {
+                            this.state.enemy.burnStacks = 0;
+                        }
+                        this.state.enemy.burnStacks += (card.burn * ability.stacks);
+                        this.emit('holyFireApplied', { holyStacks: this.state.enemy.holyStacks, burnStacks: this.state.enemy.burnStacks });
+                    }
+                    break;
+                case 'divine_flame':
+                    // 神炎：每回合对所有敌人施加神炎（无视护盾的燃烧+治疗）
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.holyStacks) {
+                            this.state.enemy.holyStacks = 0;
+                        }
+                        this.state.enemy.holyStacks += (card.holy * ability.stacks);
+                        if (!this.state.enemy.burnStacks) {
+                            this.state.enemy.burnStacks = 0;
+                        }
+                        this.state.enemy.burnStacks += (card.burn * ability.stacks);
+                        this.emit('divineFlameApplied', { holyStacks: this.state.enemy.holyStacks, burnStacks: this.state.enemy.burnStacks });
+                    }
+                    break;
+                case 'acid_rain':
+                    // 酸雨：每回合对所有敌人施加酸蚀
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.acidStacks) {
+                            this.state.enemy.acidStacks = 0;
+                        }
+                        this.state.enemy.acidStacks += (card.acid * ability.stacks);
+                        this.emit('acidRainApplied', { acidStacks: this.state.enemy.acidStacks });
+                    }
+                    break;
+                case 'corruption_storm':
+                    // 腐蚀风暴：每回合对所有敌人施加酸蚀
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.acidStacks) {
+                            this.state.enemy.acidStacks = 0;
+                        }
+                        this.state.enemy.acidStacks += (card.acid * ability.stacks);
+                        this.emit('corruptionStormApplied', { acidStacks: this.state.enemy.acidStacks });
+                    }
+                    break;
+                case 'mind_control':
+                    // 心灵控制：每回合对所有敌人施加心灵
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.psychicStacks) {
+                            this.state.enemy.psychicStacks = 0;
+                        }
+                        this.state.enemy.psychicStacks += (card.psychic * ability.stacks);
+                        this.emit('mindControlApplied', { psychicStacks: this.state.enemy.psychicStacks });
+                    }
+                    break;
+                case 'madness_field':
+                    // 疯狂领域：每回合对所有敌人施加心灵
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.psychicStacks) {
+                            this.state.enemy.psychicStacks = 0;
+                        }
+                        this.state.enemy.psychicStacks += (card.psychic * ability.stacks);
+                        this.emit('madnessFieldApplied', { psychicStacks: this.state.enemy.psychicStacks });
+                    }
+                    break;
+                case 'divine_punishment':
+                    // 神罚：每回合对所有敌人施加神圣
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.holyStacks) {
+                            this.state.enemy.holyStacks = 0;
+                        }
+                        this.state.enemy.holyStacks += (card.holy * ability.stacks);
+                        this.emit('divinePunishmentApplied', { holyStacks: this.state.enemy.holyStacks });
+                    }
+                    break;
+                case 'judgment_day':
+                    // 审判之日：每回合对所有敌人施加神圣
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.holyStacks) {
+                            this.state.enemy.holyStacks = 0;
+                        }
+                        this.state.enemy.holyStacks += (card.holy * ability.stacks);
+                        this.emit('judgmentDayApplied', { holyStacks: this.state.enemy.holyStacks });
+                    }
+                    break;
+                case 'abyss_field':
+                    // 深渊领域：每回合对所有敌人施加黑暗
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.darkStacks) {
+                            this.state.enemy.darkStacks = 0;
+                        }
+                        this.state.enemy.darkStacks += (card.dark * ability.stacks);
+                        this.emit('abyssFieldApplied', { darkStacks: this.state.enemy.darkStacks });
+                    }
+                    break;
+                case 'void_consumption':
+                    // 虚空吞噬：每回合对所有敌人施加黑暗
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.darkStacks) {
+                            this.state.enemy.darkStacks = 0;
+                        }
+                        this.state.enemy.darkStacks += (card.dark * ability.stacks);
+                        this.emit('voidConsumptionApplied', { darkStacks: this.state.enemy.darkStacks });
+                    }
+                    break;
                 case 'perma_vulnerable':
                     if (this.state.enemy) {
                         if (!this.state.enemy.vulnerable) {
@@ -412,6 +698,9 @@ export class SlayTheSpireEngine {
         
         this.emit('turnEnded', { player: '玩家' });
         
+        // 处理所有状态效果
+        this.processStatusEffects();
+        
         // 清空格挡
         this.state.player.block = 0;
         
@@ -422,6 +711,230 @@ export class SlayTheSpireEngine {
         // 切换到敌人回合
         this.state.currentPlayer = '敌人';
         this.executeEnemyTurn();
+    }
+
+    processStatusEffects() {
+        // 处理玩家的状态效果
+        this.processPlayerStatusEffects();
+        
+        // 处理敌人的状态效果
+        this.processEnemyStatusEffects();
+    }
+
+    processPlayerStatusEffects() {
+        const player = this.state.player;
+        
+        // 燃烧效果
+        if (player.burnStacks && player.burnStacks > 0) {
+            const burnDamage = Math.max(0, player.burnStacks - (player.block || 0));
+            player.block = Math.max(0, (player.block || 0) - player.burnStacks);
+            player.health = Math.max(0, player.health - burnDamage);
+            player.burnStacks = Math.max(0, player.burnStacks - 1);
+            this.emit('burnDamage', { target: '玩家', damage: burnDamage, remainingStacks: player.burnStacks });
+        }
+        
+        // 中毒效果
+        if (player.poisonStacks && player.poisonStacks > 0) {
+            const poisonDamage = player.poisonStacks;
+            player.health = Math.max(0, player.health - poisonDamage);
+            player.poisonStacks = Math.max(0, player.poisonStacks - 1);
+            this.emit('poisonDamage', { target: '玩家', damage: poisonDamage, remainingStacks: player.poisonStacks });
+        }
+        
+        // 雷电效果
+        if (player.lightningStacks && player.lightningStacks > 0) {
+            const lightningDamage = player.lightningStacks;
+            player.health = Math.max(0, player.health - lightningDamage);
+            player.lightningStacks = Math.max(0, player.lightningStacks - 1);
+            this.emit('lightningDamage', { target: '玩家', damage: lightningDamage, remainingStacks: player.lightningStacks });
+        }
+        
+        // 暗影效果
+        if (player.shadowStacks && player.shadowStacks > 0) {
+            const shadowDamage = player.shadowStacks;
+            player.health = Math.max(0, player.health - shadowDamage);
+            player.shadowStacks = Math.max(0, player.shadowStacks - 1);
+            this.emit('shadowDamage', { target: '玩家', damage: shadowDamage, remainingStacks: player.shadowStacks });
+        }
+        
+        // 流血效果
+        if (player.bleedStacks && player.bleedStacks > 0) {
+            const bleedDamage = player.bleedStacks;
+            player.health = Math.max(0, player.health - bleedDamage);
+            player.bleedStacks = Math.max(0, player.bleedStacks - 1);
+            this.emit('bleedDamage', { target: '玩家', damage: bleedDamage, remainingStacks: player.bleedStacks });
+        }
+        
+        // 灵魂效果
+        if (player.soulStacks && player.soulStacks > 0) {
+            const soulDamage = player.soulStacks;
+            player.health = Math.max(0, player.health - soulDamage);
+            player.soulStacks = Math.max(0, player.soulStacks - 1);
+            this.emit('soulDamage', { target: '玩家', damage: soulDamage, remainingStacks: player.soulStacks });
+        }
+        
+        // 噩梦效果
+        if (player.nightmareStacks && player.nightmareStacks > 0) {
+            const nightmareDamage = player.nightmareStacks * 2;
+            player.health = Math.max(0, player.health - nightmareDamage);
+            player.nightmareStacks = Math.max(0, player.nightmareStacks - 1);
+            this.emit('nightmareDamage', { target: '玩家', damage: nightmareDamage, remainingStacks: player.nightmareStacks });
+        }
+        
+        // 腐朽效果
+        if (player.decayStacks && player.decayStacks > 0) {
+            const maxHpReduction = Math.floor(player.maxHealth * 0.1 * player.decayStacks);
+            player.maxHealth = Math.max(1, player.maxHealth - maxHpReduction);
+            player.health = Math.min(player.health, player.maxHealth);
+            player.decayStacks = Math.max(0, player.decayStacks - 1);
+            this.emit('decayEffect', { target: '玩家', maxHpReduction, remainingStacks: player.decayStacks });
+        }
+    }
+
+    processEnemyStatusEffects() {
+        if (!this.state.enemy) return;
+        
+        const enemy = this.state.enemy;
+        
+        // 燃烧效果（护盾可以抵挡）
+        if (enemy.burnStacks && enemy.burnStacks > 0) {
+            const burnDamage = Math.max(0, enemy.burnStacks - (enemy.block || 0));
+            enemy.block = Math.max(0, (enemy.block || 0) - enemy.burnStacks);
+            enemy.health = Math.max(0, enemy.health - burnDamage);
+            enemy.burnStacks = Math.max(0, enemy.burnStacks - 1);
+            this.emit('burnDamage', { target: '敌人', damage: burnDamage, remainingStacks: enemy.burnStacks });
+        }
+        
+        // 冰冻效果
+        if (enemy.freezeStacks && enemy.freezeStacks > 0) {
+            enemy.freezeStacks = Math.max(0, enemy.freezeStacks - 1);
+            this.emit('freezeEffect', { target: '敌人', remainingStacks: enemy.freezeStacks });
+        }
+        
+        // 中毒效果
+        if (enemy.poisonStacks && enemy.poisonStacks > 0) {
+            const poisonDamage = enemy.poisonStacks;
+            enemy.health = Math.max(0, enemy.health - poisonDamage);
+            enemy.poisonStacks = Math.max(0, enemy.poisonStacks - 1);
+            this.emit('poisonDamage', { target: '敌人', damage: poisonDamage, remainingStacks: enemy.poisonStacks });
+        }
+        
+        // 雷电效果
+        if (enemy.lightningStacks && enemy.lightningStacks > 0) {
+            const lightningDamage = enemy.lightningStacks;
+            enemy.health = Math.max(0, enemy.health - lightningDamage);
+            enemy.lightningStacks = Math.max(0, enemy.lightningStacks - 1);
+            this.emit('lightningDamage', { target: '敌人', damage: lightningDamage, remainingStacks: enemy.lightningStacks });
+        }
+        
+        // 暗影效果
+        if (enemy.shadowStacks && enemy.shadowStacks > 0) {
+            const shadowDamage = enemy.shadowStacks;
+            enemy.health = Math.max(0, enemy.health - shadowDamage);
+            enemy.shadowStacks = Math.max(0, enemy.shadowStacks - 1);
+            this.emit('shadowDamage', { target: '敌人', damage: shadowDamage, remainingStacks: enemy.shadowStacks });
+        }
+        
+        // 流血效果
+        if (enemy.bleedStacks && enemy.bleedStacks > 0) {
+            const bleedDamage = enemy.bleedStacks;
+            enemy.health = Math.max(0, enemy.health - bleedDamage);
+            enemy.bleedStacks = Math.max(0, enemy.bleedStacks - 1);
+            this.emit('bleedDamage', { target: '敌人', damage: bleedDamage, remainingStacks: enemy.bleedStacks });
+        }
+        
+        // 虚弱效果
+        if (enemy.weakStacks && enemy.weakStacks > 0) {
+            enemy.weakStacks = Math.max(0, enemy.weakStacks - 1);
+            this.emit('weakEffect', { target: '敌人', remainingStacks: enemy.weakStacks });
+        }
+        
+        // 易伤效果
+        if (enemy.vulnerableStacks && enemy.vulnerableStacks > 0) {
+            enemy.vulnerableStacks = Math.max(0, enemy.vulnerableStacks - 1);
+            this.emit('vulnerableEffect', { target: '敌人', remainingStacks: enemy.vulnerableStacks });
+        }
+        
+        // 沉默效果
+        if (enemy.silenceStacks && enemy.silenceStacks > 0) {
+            enemy.silenceStacks = Math.max(0, enemy.silenceStacks - 1);
+            this.emit('silenceEffect', { target: '敌人', remainingStacks: enemy.silenceStacks });
+        }
+        
+        // 混乱效果
+        if (enemy.confusionStacks && enemy.confusionStacks > 0) {
+            enemy.confusionStacks = Math.max(0, enemy.confusionStacks - 1);
+            this.emit('confusionEffect', { target: '敌人', remainingStacks: enemy.confusionStacks });
+        }
+        
+        // 恐惧效果
+        if (enemy.fearStacks && enemy.fearStacks > 0) {
+            enemy.fearStacks = Math.max(0, enemy.fearStacks - 1);
+            this.emit('fearEffect', { target: '敌人', remainingStacks: enemy.fearStacks });
+        }
+        
+        // 束缚效果
+        if (enemy.bindStacks && enemy.bindStacks > 0) {
+            enemy.bindStacks = Math.max(0, enemy.bindStacks - 1);
+            this.emit('bindEffect', { target: '敌人', remainingStacks: enemy.bindStacks });
+        }
+        
+        // 腐朽效果
+        if (enemy.decayStacks && enemy.decayStacks > 0) {
+            const maxHpReduction = Math.floor(enemy.maxHealth * 0.1 * enemy.decayStacks);
+            enemy.maxHealth = Math.max(1, enemy.maxHealth - maxHpReduction);
+            enemy.health = Math.min(enemy.health, enemy.maxHealth);
+            enemy.decayStacks = Math.max(0, enemy.decayStacks - 1);
+            this.emit('decayEffect', { target: '敌人', maxHpReduction, remainingStacks: enemy.decayStacks });
+        }
+        
+        // 时间效果
+        if (enemy.timeStacks && enemy.timeStacks > 0) {
+            enemy.timeStacks = Math.max(0, enemy.timeStacks - 1);
+            this.emit('timeEffect', { target: '敌人', remainingStacks: enemy.timeStacks });
+        }
+        
+        // 灵魂效果
+        if (enemy.soulStacks && enemy.soulStacks > 0) {
+            const soulDamage = enemy.soulStacks;
+            enemy.health = Math.max(0, enemy.health - soulDamage);
+            enemy.soulStacks = Math.max(0, enemy.soulStacks - 1);
+            this.emit('soulDamage', { target: '敌人', damage: soulDamage, remainingStacks: enemy.soulStacks });
+        }
+        
+        // 噩梦效果
+        if (enemy.nightmareStacks && enemy.nightmareStacks > 0) {
+            const nightmareDamage = enemy.nightmareStacks * 2;
+            enemy.health = Math.max(0, enemy.health - nightmareDamage);
+            enemy.nightmareStacks = Math.max(0, enemy.nightmareStacks - 1);
+            this.emit('nightmareDamage', { target: '敌人', damage: nightmareDamage, remainingStacks: enemy.nightmareStacks });
+        }
+        
+        // 神圣效果
+        if (enemy.holyStacks && enemy.holyStacks > 0) {
+            enemy.holyStacks = Math.max(0, enemy.holyStacks - 1);
+            this.emit('holyEffect', { target: '敌人', remainingStacks: enemy.holyStacks });
+        }
+        
+        // 酸蚀效果
+        if (enemy.acidStacks && enemy.acidStacks > 0) {
+            enemy.acidStacks = Math.max(0, enemy.acidStacks - 1);
+            this.emit('acidEffect', { target: '敌人', remainingStacks: enemy.acidStacks });
+        }
+        
+        // 心灵效果
+        if (enemy.psychicStacks && enemy.psychicStacks > 0) {
+            enemy.psychicStacks = Math.max(0, enemy.psychicStacks - 1);
+            this.emit('psychicEffect', { target: '敌人', remainingStacks: enemy.psychicStacks });
+        }
+        
+        // 黑暗效果
+        if (enemy.darkStacks && enemy.darkStacks > 0) {
+            const darkDamage = enemy.darkStacks;
+            enemy.health = Math.max(0, enemy.health - darkDamage);
+            enemy.darkStacks = Math.max(0, enemy.darkStacks - 1);
+            this.emit('darkDamage', { target: '敌人', damage: darkDamage, remainingStacks: enemy.darkStacks });
+        }
     }
 
     executeEnemyTurn() {
