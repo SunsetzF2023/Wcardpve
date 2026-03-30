@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杀戮尖塔 - 卡牌构筑Roguelike</title>
+    <link rel="stylesheet" href="./src/styles/base.css">
+    <link rel="stylesheet" href="./src/styles/slay-the-spire.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+        
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* 顶部信息栏 */
+        .game-header {
+            background: rgba(26, 32, 44, 0.95);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #4a5568;
+            z-index: 100;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .health-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .health-bar {
+            width: 200px;
+            height: 24px;
+            background: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e53e3e, #fc8181);
+            transition: width 0.3s ease;
+        }
+        
+        .health-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #f7fafc;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .energy-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .energy-orb {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #4299e1, #2b6cb0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f7fafc;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 0 20px rgba(66, 153, 225, 0.5);
+        }
+        
+        .game-info {
+            display: flex;
+            gap: 30px;
+            color: #f7fafc;
+            font-size: 1rem;
+        }
+        
+        .game-info span {
+            background: rgba(45, 55, 72, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #4a5568;
+        }
+        
+        /* 敌人区域 */
+        .enemy-area {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 300px;
+            background: rgba(26, 32, 44, 0.9);
+            border: 2px solid #4a5568;
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 50;
+        }
+        
+        .enemy-card {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            color: #f7fafc;
+            position: relative;
+        }
+        
+        .enemy-intent {
+            margin-top: 10px;
+            padding: 5px;
+            background: rgba(220, 38, 38, 0.2);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .enemy-health-bar {
+            width: 100%;
+            height: 8px;
+            background: #2d3748;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .enemy-health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e53e3e, #fc8181);
+            transition: width 0.3s ease;
+        }
+        
+        /* 手牌区域 */
+        .hand-area {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(26, 32, 44, 0.3);
+            border-radius: 20px;
+            z-index: 60;
+        }
+        
+        .card {
+            width: 100px;
+            height: 140px;
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            color: #f7fafc;
+        }
+        
+        .card:hover {
+            transform: translateY(-20px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .card.selected {
+            transform: translateY(-30px) scale(1.1);
+            border-color: #48bb78;
+            box-shadow: 0 0 20px rgba(72, 187, 120, 0.5);
+        }
+        
+        .card.playable {
+            border-color: #4299e1;
+        }
+        
+        .card.unplayable {
+            opacity: 0.6;
+            border-color: #718096;
+            cursor: not-allowed;
+        }
+        
+        .card-cost {
+            background: rgba(72, 187, 120, 0.8);
+            color: #f7fafc;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+        
+        .card-type {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .card-name {
+            font-size: 10px;
+            color: #a0aec0;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .card-description {
+            font-size: 8px;
+            color: #cbd5e0;
+            text-align: center;
+            line-height: 1.2;
+        }
+        
+        /* 稀有度样式 */
+        .card.common {
+            border-color: #718096;
+        }
+        
+        .card.rare {
+            border-color: #4299e1;
+            box-shadow: 0 0 10px rgba(66, 153, 225, 0.2);
+        }
+        
+        .card.epic {
+            border-color: #9f7aea;
+            box-shadow: 0 0 15px rgba(159, 122, 234, 0.3);
+        }
+        
+        .card.legendary {
+            border-color: #f6ad55;
+            box-shadow: 0 0 20px rgba(246, 173, 85, 0.4);
+        }
+        
+        /* 抽牌堆区域 */
+        .deck-area {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            width: 200px;
+            background: rgba(26, 32, 44, 0.9);
+            border: 2px solid #4a5568;
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 50;
+        }
+        
+        .deck-info {
+            color: #f7fafc;
+            text-align: center;
+        }
+        
+        .deck-count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4299e1;
+            margin: 10px 0;
+        }
+        
+        .discard-count {
+            font-size: 1.2rem;
+            color: #e53e3e;
+            margin: 5px 0;
+        }
+        
+        /* 战斗日志 */
+        .combat-log {
+            position: absolute;
+            bottom: 180px;
+            left: 20px;
+            width: 300px;
+            max-height: 200px;
+            background: rgba(26, 32, 44, 0.9);
+            border: 2px solid #4a5568;
+            border-radius: 12px;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 50;
+        }
+        
+        .log-entry {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            padding: 5px;
+            border-left: 3px solid #4a5568;
+            background: rgba(45, 55, 72, 0.2);
+            border-radius: 4px;
+        }
+        
+        .log-entry.player {
+            border-left-color: #48bb78;
+            color: #48bb78;
+        }
+        
+        .log-entry.enemy {
+            border-left-color: #e53e3e;
+            color: #e53e3e;
+        }
+        
+        .log-entry.system {
+            border-left-color: #4299e1;
+            color: #4299e1;
+        }
+        
+        /* 动作按钮 */
+        .action-buttons {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 70;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #4299e1, #2b6cb0);
+            color: #f7fafc;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .end-turn-btn {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+        }
+        
+        /* 游戏结束模态框 */
+        .game-over-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 32, 44, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: #f7fafc;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content h2 {
+            margin-bottom: 15px;
+            color: #f6ad55;
+            font-size: 2rem;
+        }
+        
+        .modal-content p {
+            margin-bottom: 20px;
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: #f7fafc;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 特效动画 */
+        @keyframes cardDraw {
+            from {
+                transform: translateY(100px) rotate(10deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) rotate(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes damageNumber {
+            from {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-50px) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .damage-number {
+            position: absolute;
+            color: #fc8181;
+            font-weight: bold;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            animation: damageNumber 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 200;
+        }
+        
+        .heal-number {
+            color: #48bb78;
+        }
+        
+        .block-number {
+            color: #4299e1;
+        }
+        
+        /* 卡牌效果 */
+        .card-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: bold;
+            color: #f7fafc;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .card:hover .card-effect {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <div class="player-info">
+                <div class="health-container">
+                    <span>❤️</span>
+                    <div class="health-bar">
+                        <div class="health-fill" id="player-health" style="width: 100%"></div>
+                        <div class="health-text"><span id="player-hp">75</span>/75</div>
+                    </div>
+                </div>
+                <div class="energy-container">
+                    <div class="energy-orb" id="energy-orb">3</div>
+                    <span style="color: #f7fafc;">能量</span>
+                </div>
+            </div>
+            
+            <div class="game-info">
+                <span>楼层: <span id="floor">1</span></span>
+                <span>得分: <span id="score">0</span></span>
+            </div>
+        </header>
+
+        <div class="deck-area">
+            <div class="deck-info">
+                <div>📚 抽牌堆</div>
+                <div class="deck-count" id="deck-count">15</div>
+                <div>🗑️ 弃牌堆</div>
+                <div class="discard-count" id="discard-count">0</div>
+            </div>
+        </div>
+
+        <div class="enemy-area">
+            <div class="enemy-card">
+                <div class="enemy-name" id="enemy-name">爪牙</div>
+                <div class="enemy-health-bar">
+                    <div class="enemy-health-fill" id="enemy-health" style="width: 100%"></div>
+                </div>
+                <div class="enemy-hp-text" id="enemy-hp">24/24</div>
+                <div class="enemy-intent" id="enemy-intent">准备攻击</div>
+            </div>
+        </div>
+
+        <div class="combat-log" id="combat-log">
+            <div class="log-entry system">战斗开始！</div>
+        </div>
+
+        <div class="hand-area" id="hand-area">
+            <!-- 手牌将通过JavaScript动态生成 -->
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn" id="draw-card-btn">抽牌</button>
+            <button class="action-btn end-turn-btn" id="end-turn-btn">结束回合</button>
+        </div>
+    </div>
+
+    <div class="game-over-modal" id="game-over-modal">
+        <div class="modal-content">
+            <h2 id="game-over-title">游戏结束</h2>
+            <p id="game-over-message">再接再厉！</p>
+            <button class="restart-btn" onclick="restartGame()">重新开始</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SlayTheSpireEngine } from './src/services/SlayTheSpireEngine.js';
+        import { SlayTheSpireCardManager } from './src/services/SlayTheSpireCardManager.js';
+
+        class SlayTheSpireGame {
+            constructor() {
+                this.engine = new SlayTheSpireEngine();
+                this.cardManager = new SlayTheSpireCardManager();
+                this.selectedCard = null;
+                this.isInitialized = false;
+            }
+
+            async init() {
+                try {
+                    await this.cardManager.loadCards();
+                    this.engine.initialize(this.cardManager);
+                    this.setupEventListeners();
+                    this.startGame();
+                    this.isInitialized = true;
+                } catch (error) {
+                    console.error('Failed to initialize Slay the Spire game:', error);
+                }
+            }
+
+            setupEventListeners() {
+                // 游戏事件
+                this.engine.on('gameStarted', (data) => {
+                    this.addLog('游戏开始！', 'system');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('cardDrawn', (data) => {
+                    this.addLog(`抽了一张 ${data.card.name}`, 'player');
+                    this.updateHand();
+                    this.updateDeckDisplay();
+                });
+
+                this.engine.on('cardPlayed', (data) => {
+                    this.addLog(`打出了 ${data.card.name}`, 'player');
+                    this.showDamageNumber(data.target, data.damage, 'damage');
+                    this.updateDisplay();
+                    this.updateHand();
+                });
+
+                this.engine.on('damageDealt', (data) => {
+                    this.showDamageNumber(data.target, data.damage, 'damage');
+                    this.addLog(`${data.attacker} 对 ${data.target} 造成了 ${data.damage} 点伤害`, data.attacker === '玩家' ? 'player' : 'enemy');
+                });
+
+                this.engine.on('blockApplied', (data) => {
+                    this.showDamageNumber(data.target, data.amount, 'block');
+                    this.addLog(`${data.target} 获得了 ${data.amount} 点格挡`, 'system');
+                });
+
+                this.engine.on('healingApplied', (data) => {
+                    this.showDamageNumber(data.target, data.amount, 'heal');
+                    this.addLog(`${data.target} 恢复了 ${data.amount} 点生命值`, 'system');
+                });
+
+                this.engine.on('turnStarted', (data) => {
+                    this.addLog(`${data.player} 的回合开始`, 'system');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('turnEnded', (data) => {
+                    this.addLog(`${data.player} 的回合结束`, 'system');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('enemyTurn', (data) => {
+                    this.addLog(`敌人 ${data.action}`, 'enemy');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('gameOver', (data) => {
+                    this.addLog(`游戏结束！${data.winner} 获胜！`, 'system');
+                    this.showGameOver(data.winner === '玩家');
+                });
+
+                // UI事件
+                document.getElementById('draw-card-btn').addEventListener('click', () => {
+                    this.engine.drawCard();
+                });
+
+                document.getElementById('end-turn-btn').addEventListener('click', () => {
+                    this.engine.endTurn();
+                });
+
+                // 键盘快捷键
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'd' || e.key === 'D') {
+                        this.engine.drawCard();
+                    } else if (e.key === ' ') {
+                        e.preventDefault();
+                        this.engine.endTurn();
+                    } else if (e.key === 'r' || e.key === 'R') {
+                        this.restartGame();
+                    }
+                });
+            }
+
+            startGame() {
+                this.engine.startGame();
+            }
+
+            updateDisplay() {
+                const gameState = this.engine.getGameState();
+                
+                // 更新玩家状态
+                document.getElementById('player-hp').textContent = `${gameState.player.health}/${gameState.player.maxHealth}`;
+                document.getElementById('player-health').style.width = `${(gameState.player.health / gameState.player.maxHealth) * 100}%`;
+                document.getElementById('energy-orb').textContent = gameState.player.energy;
+                
+                // 更新敌人状态
+                if (gameState.enemy) {
+                    document.getElementById('enemy-name').textContent = gameState.enemy.name;
+                    document.getElementById('enemy-hp').textContent = `${gameState.enemy.health}/${gameState.enemy.maxHealth}`;
+                    document.getElementById('enemy-health').style.width = `${(gameState.enemy.health / gameState.enemy.maxHealth) * 100}%`;
+                    document.getElementById('enemy-intent').textContent = gameState.enemy.intent;
+                }
+                
+                // 更新游戏信息
+                document.getElementById('floor').textContent = gameState.floor;
+                document.getElementById('score').textContent = gameState.score;
+                
+                // 更新按钮状态
+                document.getElementById('draw-card-btn').disabled = gameState.currentPlayer !== '玩家' || gameState.deck.length === 0;
+                document.getElementById('end-turn-btn').disabled = gameState.currentPlayer !== '玩家';
+            }
+
+            updateHand() {
+                const handArea = document.getElementById('hand-area');
+                handArea.innerHTML = '';
+                
+                const gameState = this.engine.getGameState();
+                
+                gameState.hand.forEach((card, index) => {
+                    const cardElement = this.createCardElement(card, index);
+                    handArea.appendChild(cardElement);
+                });
+            }
+
+            createCardElement(card, index) {
+                const cardElement = document.createElement('div');
+                cardElement.className = `card ${card.rarity}`;
+                cardElement.dataset.cardIndex = index;
+                
+                const gameState = this.engine.getGameState();
+                const isPlayable = this.engine.canPlayCard(card, gameState.player);
+                
+                if (isPlayable) {
+                    cardElement.classList.add('playable');
+                } else {
+                    cardElement.classList.add('unplayable');
+                }
+                
+                cardElement.innerHTML = `
+                    <div class="card-cost">${card.cost}</div>
+                    <div class="card-type">${card.type}</div>
+                    <div class="card-name">${card.name}</div>
+                    <div class="card-description">${card.description}</div>
+                    <div class="card-effect">${this.getCardEffectText(card)}</div>
+                `;
+                
+                cardElement.addEventListener('click', () => this.onCardClick(index));
+                
+                // 添加抽牌动画
+                cardElement.style.animation = 'cardDraw 0.5s ease-out';
+                
+                return cardElement;
+            }
+
+            getCardEffectText(card) {
+                let effectText = '';
+                
+                if (card.damage) {
+                    effectText += `伤害 ${card.damage}`;
+                }
+                if (card.block) {
+                    if (effectText) effectText += ' | ';
+                    effectText += `格挡 ${card.block}`;
+                }
+                if (card.heal) {
+                    if (effectText) effectText += ' | ';
+                    effectText += `治疗 ${card.heal}`;
+                }
+                
+                return effectText || '特殊效果';
+            }
+
+            onCardClick(cardIndex) {
+                const gameState = this.engine.getGameState();
+                const card = gameState.hand[cardIndex];
+                
+                if (!this.engine.canPlayCard(card, gameState.player)) {
+                    this.addLog('能量不足或无法打出这张牌！', 'system');
+                    return;
+                }
+                
+                // 打出卡牌
+                this.engine.playCard(cardIndex, gameState.player, gameState.enemy);
+                
+                // 更新手牌显示
+                this.updateHand();
+            }
+
+            updateDeckDisplay() {
+                const gameState = this.engine.getGameState();
+                document.getElementById('deck-count').textContent = gameState.deck.length;
+                document.getElementById('discard-count').textContent = gameState.discard.length;
+            }
+
+            showDamageNumber(target, amount, type) {
+                const gameContainer = document.querySelector('.game-container');
+                const damageElement = document.createElement('div');
+                damageElement.className = `damage-number ${type}-number`;
+                damageElement.textContent = type === 'damage' ? `-${amount}` : type === 'heal' ? `+${amount}` : `+${amount}`;
+                
+                // 根据目标设置位置
+                if (target === '玩家') {
+                    damageElement.style.left = '200px';
+                    damageElement.style.top = '100px';
+                } else {
+                    damageElement.style.left = '600px';
+                    damageElement.style.top = '100px';
+                }
+                
+                gameContainer.appendChild(damageElement);
+                
+                setTimeout(() => damageElement.remove(), 1000);
+            }
+
+            addLog(message, type = 'system') {
+                const combatLog = document.getElementById('combat-log');
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.textContent = message;
+                combatLog.appendChild(logEntry);
+                combatLog.scrollTop = combatLog.scrollHeight;
+                
+                // 限制日志条数
+                while (combatLog.children.length > 50) {
+                    combatLog.removeChild(combatLog.firstChild);
+                }
+            }
+
+            showGameOver(victory) {
+                const modal = document.getElementById('game-over-modal');
+                const title = document.getElementById('game-over-title');
+                const message = document.getElementById('game-over-message');
+                
+                title.textContent = victory ? '🎉 胜利！' : '😔 失败';
+                message.textContent = victory ? '恭喜你击败了所有敌人！' : '敌人击败了你，再接再厉！';
+                
+                modal.style.display = 'flex';
+            }
+
+            restartGame() {
+                location.reload();
+            }
+        }
+
+        // 全局重新开始函数
+        window.restartGame = function() {
+            location.reload();
+        };
+
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', async () => {
+            const game = new SlayTheSpireGame();
+            await game.init();
+            window.slayGame = game;
+        });
+    </script>
+</body>
+</html>
