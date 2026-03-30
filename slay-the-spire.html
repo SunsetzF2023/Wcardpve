@@ -626,9 +626,19 @@
                     this.updateDisplay();
                 });
 
-                this.engine.on('gameOver', (data) => {
-                    this.addLog(`游戏结束！${data.winner} 获胜！`, 'system');
-                    this.showGameOver(data.winner === '玩家');
+                this.engine.on('cardReward', (data) => {
+                    this.addLog(`获得奖励卡牌：${data.card.name}`, 'system');
+                    this.showRewardNotification(data.card);
+                });
+
+                this.engine.on('passiveAbilityAdded', (data) => {
+                    this.addLog(`获得被动能力：${data.card.name}`, 'system');
+                    this.updatePassiveDisplay();
+                });
+
+                this.engine.on('passiveAbilityUpgraded', (data) => {
+                    this.addLog(`被动能力升级：${data.card.name} (${data.stacks}层)`, 'system');
+                    this.updatePassiveDisplay();
                 });
 
                 // UI事件
@@ -798,15 +808,67 @@
                 }
             }
 
-            showGameOver(victory) {
-                const modal = document.getElementById('game-over-modal');
-                const title = document.getElementById('game-over-title');
-                const message = document.getElementById('game-over-message');
+            showRewardNotification(card) {
+                const gameContainer = document.querySelector('.game-container');
+                const notification = document.createElement('div');
+                notification.className = 'reward-notification';
+                notification.innerHTML = `
+                    <div class="reward-icon">🎁</div>
+                    <div class="reward-text">获得 ${card.name}</div>
+                `;
+                notification.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(246, 173, 85, 0.9);
+                    color: #1a202c;
+                    padding: 15px 25px;
+                    border-radius: 12px;
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                    z-index: 1000;
+                    animation: rewardAppear 2s ease-out forwards;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                `;
+                gameContainer.appendChild(notification);
                 
-                title.textContent = victory ? '🎉 胜利！' : '😔 失败';
-                message.textContent = victory ? '恭喜你击败了所有敌人！' : '敌人击败了你，再接再厉！';
+                setTimeout(() => notification.remove(), 2000);
+            }
+
+            updatePassiveDisplay() {
+                const gameState = this.engine.getGameState();
+                const passiveArea = document.getElementById('passive-abilities');
                 
-                modal.style.display = 'flex';
+                if (!passiveArea) {
+                    // 创建被动能力显示区域
+                    const deckArea = document.querySelector('.deck-area');
+                    const passiveDiv = document.createElement('div');
+                    passiveDiv.id = 'passive-abilities';
+                    passiveDiv.innerHTML = '<h4 style="color: #f7fafc; margin-bottom: 10px;">被动能力</h4>';
+                    passiveDiv.style.cssText = `
+                        margin-top: 20px;
+                        padding: 15px;
+                        background: rgba(26, 32, 44, 0.9);
+                        border: 2px solid #4a5568;
+                        border-radius: 8px;
+                        color: #f7fafc;
+                    `;
+                    deckArea.appendChild(passiveDiv);
+                }
+                
+                if (gameState.player.passiveAbilities && gameState.player.passiveAbilities.length > 0) {
+                    const passiveHTML = gameState.player.passiveAbilities.map(ability => 
+                        `<div class="passive-ability">
+                            <div class="passive-name">${ability.name}</div>
+                            <div class="passive-stacks">x${ability.stacks}</div>
+                        </div>`
+                    ).join('');
+                    
+                    passiveArea.innerHTML = '<h4 style="color: #f7fafc; margin-bottom: 10px;">被动能力</h4>' + passiveHTML;
+                } else {
+                    passiveArea.innerHTML = '<h4 style="color: #f7fafc; margin-bottom: 10px;">被动能力</h4><div style="color: #718096;">无</div>';
+                }
             }
 
             restartGame() {

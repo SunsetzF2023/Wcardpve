@@ -38,7 +38,7 @@ export class SlayTheSpireEngine {
     setupInitialDeck() {
         // 创建初始牌组
         const initialCards = [
-            'strike', 'strike', 'strike', 'strike', 'strike',
+            'strike', 'strike', 'strike', 'strike',
             'defend', 'defend', 'defend', 'defend', 'defend',
             'bash'
         ];
@@ -50,6 +50,9 @@ export class SlayTheSpireEngine {
         // 洗牌并准备抽牌堆
         this.shuffleDeck();
         this.prepareDrawPile();
+        
+        // 初始化被动能力
+        this.state.player.passiveAbilities = [];
     }
 
     shuffleDeck() {
@@ -212,10 +215,167 @@ export class SlayTheSpireEngine {
             this.emit('cardsDrawn', { amount: card.drawCards });
         }
         
+        // 被动能力效果
+        if (card.passive) {
+            this.addPassiveAbility(player, card);
+            this.emit('passiveAbilityAdded', { card, player });
+        }
+        
         // 特殊效果
         if (card.special) {
             this.executeSpecialEffect(card, player, target);
         }
+    }
+
+    addPassiveAbility(player, card) {
+        // 添加被动能力到玩家
+        if (!player.passiveAbilities) {
+            player.passiveAbilities = [];
+        }
+        
+        // 检查是否已存在相同的能力
+        const existingAbility = player.passiveAbilities.find(ability => ability.id === card.id);
+        if (existingAbility) {
+            // 如果已存在，升级效果
+            this.upgradePassiveAbility(player, card);
+        } else {
+            // 添加新的被动能力
+            player.passiveAbilities.push({
+                id: card.id,
+                name: card.name,
+                effect: card,
+                stacks: 1
+            });
+        }
+    }
+
+    upgradePassiveAbility(player, card) {
+        const ability = player.passiveAbilities.find(ability => ability.id === card.id);
+        if (ability) {
+            ability.stacks++;
+            this.emit('passiveAbilityUpgraded', { card, stacks: ability.stacks });
+        }
+    }
+
+    applyPassiveAbilities(player) {
+        // 每回合开始时应用所有被动能力
+        if (!player.passiveAbilities) return;
+        
+        player.passiveAbilities.forEach(ability => {
+            const card = ability.effect;
+            
+            switch (card.special) {
+                case 'perma_defend':
+                    player.block = (player.block || 0) + (card.block * ability.stacks);
+                    this.emit('passiveBlockApplied', { amount: card.block * ability.stacks });
+                    break;
+                case 'perma_strike':
+                    if (this.state.enemy) {
+                        const damage = card.damage * ability.stacks;
+                        const actualDamage = Math.max(0, damage - (this.state.enemy.block || 0));
+                        this.state.enemy.block = Math.max(0, (this.state.enemy.block || 0) - damage);
+                        this.state.enemy.health = Math.max(0, this.state.enemy.health - actualDamage);
+                        this.emit('passiveDamageDealt', { damage: actualDamage });
+                    }
+                    break;
+                case 'perma_heal':
+                    const healAmount = card.heal * ability.stacks;
+                    const actualHeal = Math.min(healAmount, player.maxHealth - player.health);
+                    player.health += actualHeal;
+                    this.emit('passiveHealingApplied', { amount: actualHeal });
+                    break;
+                case 'perma_energy':
+                    player.maxEnergy = 3 + (card.energy * ability.stacks);
+                    this.emit('passiveEnergyGained', { amount: card.energy * ability.stacks });
+                    break;
+                case 'perma_draw':
+                    for (let i = 0; i < (card.drawCards * ability.stacks); i++) {
+                        this.drawCard();
+                    }
+                    this.emit('passiveCardsDrawn', { amount: card.drawCards * ability.stacks });
+                    break;
+                case 'perma_burn':
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.burnStacks) {
+                            this.state.enemy.burnStacks = 0;
+                        }
+                        this.state.enemy.burnStacks += (card.burn * ability.stacks);
+                        this.emit('passiveBurnApplied', { stacks: this.state.enemy.burnStacks });
+                    }
+                    break;
+                case 'perma_vulnerable':
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.vulnerable) {
+                            this.state.enemy.vulnerable = 0;
+                        }
+                        this.state.enemy.vulnerable += (card.vulnerable * ability.stacks);
+                        this.emit('passiveVulnerableApplied', { stacks: this.state.enemy.vulnerable });
+                    }
+                    break;
+                case 'perma_weak':
+                    if (this.state.enemy) {
+                        if (!this.state.enemy.weak) {
+                            this.state.enemy.weak = 0;
+                        }
+                        this.state.enemy.weak += (card.weak * ability.stacks);
+                        this.emit('passiveWeakApplied', { stacks: this.state.enemy.weak });
+                    }
+                    break;
+                case 'perma_crit':
+                    if (!player.critChance) {
+                        player.critChance = 0;
+                    }
+                    player.critChance += (card.critChance * ability.stacks);
+                    this.emit('passiveCritApplied', { chance: player.critChance });
+                    break;
+                case 'perma_dodge':
+                    if (!player.dodgeChance) {
+                        player.dodgeChance = 0;
+                    }
+                    player.dodgeChance += (card.dodge * ability.stacks);
+                    this.emit('passiveDodgeApplied', { chance: player.dodgeChance });
+                    break;
+                case 'perma_lifesteal':
+                    if (!player.lifesteal) {
+                        player.lifesteal = 0;
+                    }
+                    player.lifesteal += (card.lifesteal * ability.stacks);
+                    this.emit('passiveLifestealApplied', { amount: player.lifesteal });
+                    break;
+                case 'perma_thorns':
+                    if (!player.thorns) {
+                        player.thorns = 0;
+                    }
+                    player.thorns += (card.thorns * ability.stacks);
+                    this.emit('passiveThornsApplied', { amount: player.thorns });
+                    break;
+                case 'perma_shield':
+                    if (!player.shield) {
+                        player.shield = 0;
+                    }
+                    player.shield += (card.shield * ability.stacks);
+                    this.emit('passiveShieldApplied', { amount: player.shield });
+                    break;
+                case 'perma_rage':
+                    if (!player.strength) {
+                        player.strength = 0;
+                    }
+                    player.strength += (card.rage * ability.stacks);
+                    this.emit('passiveStrengthApplied', { amount: player.strength });
+                    break;
+                case 'perma_wisdom':
+                    // 智慧效果：所有卡牌消耗-1
+                    this.emit('passiveWisdomApplied', { costReduction: ability.stacks });
+                    break;
+                case 'perma_immortal':
+                    if (player.health < player.maxHealth * 0.2) {
+                        const healAmount = player.maxHealth * 0.5 - player.health;
+                        player.health += healAmount;
+                        this.emit('passiveImmortalTriggered', { amount: healAmount });
+                    }
+                    break;
+            }
+        });
     }
 
     executeSpecialEffect(card, player, target) {
@@ -313,6 +473,9 @@ export class SlayTheSpireEngine {
         // 恢复能量
         this.state.player.energy = this.state.player.maxEnergy;
         
+        // 应用被动能力
+        this.applyPassiveAbilities(this.state.player);
+        
         // 抽5张牌
         for (let i = 0; i < 5; i++) {
             this.drawCard();
@@ -346,13 +509,13 @@ export class SlayTheSpireEngine {
             return;
         }
         
-        // 生成新敌人
-        this.spawnEnemy();
-        
         // 恢复一些生命值
         const healAmount = Math.floor(this.state.player.maxHealth * 0.3);
         this.state.player.health = Math.min(this.state.player.maxHealth, this.state.player.health + healAmount);
         this.emit('healingApplied', { target: '玩家', amount: healAmount });
+        
+        // 每层完成获得新卡牌
+        this.rewardCardForFloor();
         
         // 重置抽牌堆
         this.state.player.discard.push(...this.state.player.hand);
@@ -361,6 +524,37 @@ export class SlayTheSpireEngine {
         this.drawInitialHand();
         
         this.emit('floorChanged', { floor: this.state.floor });
+    }
+
+    rewardCardForFloor() {
+        // 根据楼层奖励不同类型的卡牌
+        const cardRewards = this.getCardRewardsForFloor(this.state.floor);
+        const selectedReward = cardRewards[Math.floor(Math.random() * cardRewards.length)];
+        
+        if (selectedReward) {
+            // 将奖励卡牌加入牌组
+            this.state.player.deck.push(selectedReward);
+            this.emit('cardReward', { card: selectedReward, floor: this.state.floor });
+        }
+    }
+
+    getCardRewardsForFloor(floor) {
+        // 根据楼层返回不同的卡牌奖励池
+        const rewardPools = {
+            1: ['defend', 'strike', 'bash', 'cleave', 'iron_wave'],
+            2: ['defend', 'strike', 'cold_snap', 'dual_wield', 'flame_barrier'],
+            3: ['defend', 'strike', 'ghostly_armor', 'hemokinesis', 'infernal_blade'],
+            4: ['defend', 'strike', 'intimidate', 'limit_break', 'metallicize'],
+            5: ['defend', 'strike', 'pommel_strike', 'power_through', 'rage'],
+            6: ['defend', 'strike', 'rampage', 'reaper', 'reckless_charge'],
+            7: ['defend', 'strike', 'seeing_red', 'sever_soul', 'shrug_it_off'],
+            8: ['defend', 'strike', 'sunder', 'sweeping_beam', 'tackle'],
+            9: ['defend', 'strike', 'thunder_clap', 'twin_strike', 'upercut'],
+            10: ['defend', 'strike', 'war_cry', 'whirlwind', 'immolate']
+        };
+        
+        const pool = rewardPools[Math.min(floor, 10)] || rewardPools[10];
+        return pool.map(cardId => this.cardManager.getCardById(cardId)).filter(card => card);
     }
 
     endGame(victory) {
