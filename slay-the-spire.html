@@ -626,6 +626,10 @@
                     this.updateDisplay();
                 });
 
+                this.engine.on('handFull', (data) => {
+                    this.addLog('手牌已满（最多10张）', 'system');
+                });
+
                 this.engine.on('cardReward', (data) => {
                     this.addLog(`获得奖励卡牌：${data.card.name}`, 'system');
                     this.showRewardNotification(data.card);
@@ -698,10 +702,12 @@
                 
                 const gameState = this.engine.getGameState();
                 
-                gameState.hand.forEach((card, index) => {
-                    const cardElement = this.createCardElement(card, index);
-                    handArea.appendChild(cardElement);
-                });
+                if (gameState && gameState.player && gameState.player.hand) {
+                    gameState.player.hand.forEach((card, index) => {
+                        const cardElement = this.createCardElement(card, index);
+                        handArea.appendChild(cardElement);
+                    });
+                }
             }
 
             createCardElement(card, index) {
@@ -710,7 +716,7 @@
                 cardElement.dataset.cardIndex = index;
                 
                 const gameState = this.engine.getGameState();
-                const isPlayable = this.engine.canPlayCard(card, gameState.player);
+                const isPlayable = gameState && gameState.player && this.engine.canPlayCard(card, gameState.player);
                 
                 if (isPlayable) {
                     cardElement.classList.add('playable');
@@ -718,20 +724,38 @@
                     cardElement.classList.add('unplayable');
                 }
                 
+                // 卡牌内容
                 cardElement.innerHTML = `
                     <div class="card-cost">${card.cost}</div>
-                    <div class="card-type">${card.type}</div>
+                    <div class="card-type">${this.getCardTypeSymbol(card.type)}</div>
                     <div class="card-name">${card.name}</div>
                     <div class="card-description">${card.description}</div>
-                    <div class="card-effect">${this.getCardEffectText(card)}</div>
+                    ${card.damage ? `<div class="card-effect">💥 ${card.damage}</div>` : ''}
+                    ${card.block ? `<div class="card-effect">🛡️ ${card.block}</div>` : ''}
+                    ${card.heal ? `<div class="card-effect">💚 ${card.heal}</div>` : ''}
                 `;
                 
-                cardElement.addEventListener('click', () => this.onCardClick(index));
-                
-                // 添加抽牌动画
-                cardElement.style.animation = 'cardDraw 0.5s ease-out';
+                // 点击事件
+                cardElement.addEventListener('click', () => {
+                    if (isPlayable) {
+                        this.playCard(index);
+                    }
+                });
                 
                 return cardElement;
+            }
+
+            getCardTypeSymbol(type) {
+                switch (type) {
+                    case 'attack':
+                        return '⚔️';
+                    case 'skill':
+                        return '💡';
+                    case 'power':
+                        return '⚡️';
+                    default:
+                        return '';
+                }
             }
 
             getCardEffectText(card) {

@@ -110,8 +110,8 @@ export class SlayTheSpireEngine {
     }
 
     drawInitialHand() {
-        // 初始抽5张牌
-        for (let i = 0; i < 5; i++) {
+        // 初始手牌4张
+        for (let i = 0; i < 4; i++) {
             this.drawCard();
         }
     }
@@ -122,14 +122,20 @@ export class SlayTheSpireEngine {
         }
         
         if (this.state.player.drawPile.length === 0) {
-            return false; // 没有牌可抽
+            return;
         }
         
-        const card = this.state.player.drawPile.shift();
+        // 检查手牌上限（最多10张）
+        if (this.state.player.hand.length >= 10) {
+            this.emit('handFull', {});
+            return;
+        }
+        
+        const card = this.state.player.drawPile.pop();
         this.state.player.hand.push(card);
         
         this.emit('cardDrawn', { card });
-        return true;
+        this.emit('gameStateChanged', {});
     }
 
     canPlayCard(card, player) {
@@ -989,8 +995,8 @@ export class SlayTheSpireEngine {
         // 应用被动能力
         this.applyPassiveAbilities(this.state.player);
         
-        // 抽5张牌
-        for (let i = 0; i < 5; i++) {
+        // 抽3张牌
+        for (let i = 0; i < 3; i++) {
             this.drawCard();
         }
         
