@@ -1075,22 +1075,8 @@ export class SlayTheSpireEngine {
         this.endEnemyTurn();
     }
 
-    endEnemyTurn() {
-        // 清空所有敌人格挡
-        this.state.enemies.forEach(enemy => {
-            if (enemy.block) {
-                enemy.block = 0;
-            }
-        });
-        
-        // 检查是否所有敌人都被击败
-        const aliveEnemies = this.state.enemies.filter(enemy => enemy.health > 0);
-        if (aliveEnemies.length === 0) {
-            this.enemyDefeated();
-            return;
-        }
-        
-        // 开始玩家回合
+    // 开始玩家回合
+    startPlayerTurn() {
         this.state.currentPlayer = '玩家';
         this.state.turnCount++;
         this.state.player.energy = this.state.player.maxEnergy;
@@ -1114,6 +1100,25 @@ export class SlayTheSpireEngine {
         this.updateEnemyIntent();
         
         this.emit('turnStarted', { player: '玩家' });
+    }
+
+    endEnemyTurn() {
+        // 清空所有敌人格挡
+        this.state.enemies.forEach(enemy => {
+            if (enemy.block) {
+                enemy.block = 0;
+            }
+        });
+        
+        // 检查是否所有敌人都被击败
+        const aliveEnemies = this.state.enemies.filter(enemy => enemy.health > 0);
+        if (aliveEnemies.length === 0) {
+            this.enemyDefeated();
+            return;
+        }
+        
+        // 开始玩家回合
+        this.startPlayerTurn();
     }
 
     updateEnemyIntent() {
