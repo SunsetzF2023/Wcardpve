@@ -208,7 +208,7 @@ export class SlayTheSpireEngine {
         return true;
     }
 
-    playCard(cardIndex, player, target) {
+    playCard(cardIndex, player, targetEnemyIndex = null) {
         const card = this.state.player.hand[cardIndex];
         console.log(`Playing card at index ${cardIndex}:`, card);
         
@@ -217,7 +217,24 @@ export class SlayTheSpireEngine {
             return false;
         }
         
-        console.log(`Playing card ${card.name}, cost: ${card.cost}`);
+        // 如果是攻击卡牌且没有指定目标，使用第一个活着的敌人
+        let target = null;
+        if (card.target === 'enemy') {
+            if (targetEnemyIndex !== null && targetEnemyIndex >= 0 && targetEnemyIndex < this.state.enemies.length) {
+                target = this.state.enemies[targetEnemyIndex];
+                if (target.health <= 0) {
+                    // 如果选中的敌人已死亡，使用第一个活着的敌人
+                    target = this.state.enemies.find(enemy => enemy.health > 0);
+                }
+            } else {
+                // 使用第一个活着的敌人
+                target = this.state.enemies.find(enemy => enemy.health > 0);
+            }
+        } else if (card.target === 'self') {
+            target = player;
+        }
+        
+        console.log(`Playing card ${card.name}, cost: ${card.cost}, target:`, target);
         console.log('Player before play:', {
             energy: player.energy,
             handSize: this.state.player.hand.length,
