@@ -1034,23 +1034,23 @@ export class SlayTheSpireEngine {
         
         // 统一计算格挡和伤害
         if (totalDamage > 0) {
-            console.log(`Enemy attack calculation:`, {
-                totalDamage: totalDamage,
-                playerBlock: this.state.player.block || 0,
-                playerHealthBefore: this.state.player.health
-            });
-            
             const playerBlockBefore = this.state.player.block || 0;
+            const playerHealthBefore = this.state.player.health;
+            
+            console.log(`=== ENEMY ATTACK START ===`);
+            console.log(`Total incoming damage: ${totalDamage}`);
+            console.log(`Player block before attack: ${playerBlockBefore}`);
+            console.log(`Player health before attack: ${playerHealthBefore}`);
+            
             const actualDamage = Math.max(0, totalDamage - playerBlockBefore);
             this.state.player.block = Math.max(0, playerBlockBefore - totalDamage);
             this.state.player.health = Math.max(0, this.state.player.health - actualDamage);
             
-            console.log(`After damage calculation:`, {
-                actualDamage: actualDamage,
-                playerBlockAfter: this.state.player.block,
-                playerHealthAfter: this.state.player.health,
-                damageCalculation: `Math.max(0, ${totalDamage} - ${playerBlockBefore}) = ${actualDamage}`
-            });
+            console.log(`Damage calculation: Math.max(0, ${totalDamage} - ${playerBlockBefore}) = ${actualDamage}`);
+            console.log(`Player block after attack: ${this.state.player.block}`);
+            console.log(`Player health after attack: ${this.state.player.health}`);
+            console.log(`Should player take damage? ${actualDamage > 0 ? 'YES' : 'NO'}`);
+            console.log(`=== ENEMY ATTACK END ===`);
             
             // 发出伤害事件
             attackingEnemies.forEach(enemy => {
@@ -1090,7 +1090,7 @@ export class SlayTheSpireEngine {
             return;
         }
         
-        // 开始玩家回合，清空玩家格挡
+        // 开始玩家回合
         this.state.currentPlayer = '玩家';
         this.state.turnCount++;
         this.state.player.energy = this.state.player.maxEnergy;
