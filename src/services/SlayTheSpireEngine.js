@@ -819,6 +819,23 @@ export class SlayTheSpireEngine {
                     this.emit('blockApplied', { target: player.name, amount: card.block });
                 }
                 break;
+            case 'hemokinesis':
+                // 血液操控：失去3点生命值，造成7点伤害
+                if (target) {
+                    // 先扣血
+                    const healthLoss = 3;
+                    player.health = Math.max(0, player.health - healthLoss);
+                    console.log(`Hemokinesis: Player loses ${healthLoss} health, new health: ${player.health}`);
+                    this.emit('healthLost', { target: player.name, amount: healthLoss });
+                    
+                    // 再造成伤害
+                    const damageDealt = Math.max(0, card.damage - (target.block || 0));
+                    target.block = Math.max(0, (target.block || 0) - card.damage);
+                    target.health = Math.max(0, target.health - damageDealt);
+                    console.log(`Hemokinesis: Dealt ${damageDealt} damage to ${target.name}`);
+                    this.emit('damageDealt', { attacker: player.name, target: target.name, damage: damageDealt });
+                }
+                break;
         }
     }
 
