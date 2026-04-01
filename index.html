@@ -184,9 +184,14 @@
                     this.updateDisplay();
                 });
 
-                this.engine.on('gameOver', (data) => {
-                    this.addLog(`游戏结束！${data.winner} 获胜！`, 'system');
-                    this.showGameOver(data.winner === '玩家');
+                this.engine.on('floorChanged', (data) => {
+                    this.addLog(`进入第 ${data.floor} 层！`, 'system');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('cardReward', (data) => {
+                    this.addLog(`获得奖励卡牌：${data.card.name}`, 'system');
+                    this.showRewardNotification(data.card);
                 });
 
                 // UI事件
@@ -365,6 +370,29 @@
                 message.textContent = victory ? '恭喜你击败了所有敌人！' : '敌人击败了你，再接再厉！';
                 
                 modal.style.display = 'flex';
+            }
+
+            showRewardNotification(card) {
+                // 创建奖励通知元素
+                const notification = document.createElement('div');
+                notification.className = 'reward-notification';
+                notification.innerHTML = `
+                    <div class="reward-icon">🎁</div>
+                    <div class="reward-text">
+                        <div class="reward-title">获得新卡牌！</div>
+                        <div class="reward-card-name">${card.name}</div>
+                    </div>
+                `;
+                
+                // 添加到页面
+                document.body.appendChild(notification);
+                
+                // 3秒后移除
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 3000);
             }
 
             restartGame() {

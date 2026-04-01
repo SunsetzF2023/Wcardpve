@@ -662,6 +662,77 @@ body {
     box-shadow: var(--shadow-glow);
 }
 
+/* 奖励通知 */
+.reward-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-secondary);
+    border: 2px solid var(--legendary-gold);
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    animation: rewardSlideIn 0.5s ease-out, rewardPulse 2s ease-in-out infinite;
+    backdrop-filter: blur(10px);
+}
+
+@keyframes rewardSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes rewardPulse {
+    0%, 100% {
+        box-shadow: var(--shadow-lg), 0 0 20px rgba(247, 186, 46, 0.3);
+    }
+    50% {
+        box-shadow: var(--shadow-lg), 0 0 40px rgba(247, 186, 46, 0.6);
+    }
+}
+
+.reward-icon {
+    font-size: 3rem;
+    animation: rewardIconBounce 1s ease-in-out infinite alternate;
+}
+
+@keyframes rewardIconBounce {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+.reward-text {
+    text-align: left;
+}
+
+.reward-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--legendary-gold);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(247, 186, 46, 0.5);
+}
+
+.reward-card-name {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
 /* 响应式设计 */
 @media (max-width: 1200px) {
     .enemy-area {

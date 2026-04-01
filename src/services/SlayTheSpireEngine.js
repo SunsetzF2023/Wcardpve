@@ -86,15 +86,65 @@ export class SlayTheSpireEngine {
     }
 
     spawnEnemy() {
+        // 根据楼层生成不同强度的敌人
         const enemyTypes = [
-            { name: '爪牙', health: 24, damage: 6, intent: '攻击' },
-            { name: '蓝史莱姆', health: 12, damage: 3, intent: '攻击' },
-            { name: '红史莱姆', health: 18, damage: 8, intent: '攻击' },
-            { name: '小喽啰', health: 30, damage: 10, intent: '攻击' }
+            { 
+                name: '爪牙', 
+                health: 24 + (this.state.floor - 1) * 8, 
+                damage: 6 + Math.floor((this.state.floor - 1) * 1.5), 
+                intent: '攻击' 
+            },
+            { 
+                name: '蓝史莱姆', 
+                health: 12 + (this.state.floor - 1) * 4, 
+                damage: 3 + Math.floor((this.state.floor - 1) * 0.8), 
+                intent: '攻击' 
+            },
+            { 
+                name: '红史莱姆', 
+                health: 18 + (this.state.floor - 1) * 6, 
+                damage: 8 + Math.floor((this.state.floor - 1) * 1.2), 
+                intent: '攻击' 
+            },
+            { 
+                name: '小喽啰', 
+                health: 30 + (this.state.floor - 1) * 10, 
+                damage: 10 + Math.floor((this.state.floor - 1) * 2), 
+                intent: '攻击' 
+            },
+            // 高楼层新增强敌
+            ...(this.state.floor >= 3 ? [{
+                name: '精英守卫', 
+                health: 40 + (this.state.floor - 3) * 12, 
+                damage: 12 + Math.floor((this.state.floor - 3) * 2.5), 
+                intent: '攻击' 
+            }] : []),
+            ...(this.state.floor >= 5 ? [{
+                name: '暗影刺客', 
+                health: 35 + (this.state.floor - 5) * 8, 
+                damage: 15 + Math.floor((this.state.floor - 5) * 3), 
+                intent: '攻击' 
+            }] : []),
+            ...(this.state.floor >= 7 ? [{
+                name: '熔岩巨兽', 
+                health: 60 + (this.state.floor - 7) * 15, 
+                damage: 18 + Math.floor((this.state.floor - 7) * 3.5), 
+                intent: '攻击' 
+            }] : []),
+            ...(this.state.floor >= 9 ? [{
+                name: '深渊领主', 
+                health: 80 + (this.state.floor - 9) * 20, 
+                damage: 25 + Math.floor((this.state.floor - 9) * 5), 
+                intent: '攻击' 
+            }] : [])
         ];
+
+        const availableEnemies = enemyTypes.filter(enemy => 
+            this.state.floor >= 1 || (!enemy.name.includes('精英') && !enemy.name.includes('刺客') && !enemy.name.includes('巨兽') && !enemy.name.includes('领主'))
+        );
         
-        const enemyType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-        
+        const enemyType = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+
         this.state.enemy = {
             id: 'enemy',
             name: enemyType.name,
@@ -105,7 +155,7 @@ export class SlayTheSpireEngine {
             intent: enemyType.intent,
             nextAction: 'attack'
         };
-        
+
         this.emit('enemySpawned', { enemy: this.state.enemy });
     }
 
@@ -1041,6 +1091,9 @@ export class SlayTheSpireEngine {
         this.state.player.hand = [];
         this.prepareDrawPile();
         this.drawInitialHand();
+        
+        // 生成下一关的敌人
+        this.spawnEnemy();
         
         this.emit('floorChanged', { floor: this.state.floor });
     }
