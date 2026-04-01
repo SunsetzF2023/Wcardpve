@@ -1099,19 +1099,23 @@ export class SlayTheSpireEngine {
         }
         
         // 设置敌人意图
-        this.setEnemyIntent();
+        this.updateEnemyIntent();
         
         this.emit('turnStarted', { player: '玩家' });
     }
 
-    setEnemyIntent() {
-        if (!this.state.enemy) return;
+    updateEnemyIntent() {
+        if (!this.state.enemies || this.state.enemies.length === 0) return;
         
-        // 简单的AI：70%概率攻击，30%概率防御
-        this.state.enemy.nextAction = Math.random() < 0.7 ? 'attack' : 'defend';
-        this.state.enemy.intent = this.state.enemy.nextAction === 'attack' 
-            ? `准备攻击 ${this.state.enemy.damage}` 
-            : '准备防御';
+        this.state.enemies.forEach(enemy => {
+            if (enemy.health <= 0) return;
+            
+            // 简单的AI：70%概率攻击，30%概率防御
+            enemy.nextAction = Math.random() < 0.7 ? 'attack' : 'defend';
+            enemy.intent = enemy.nextAction === 'attack' 
+                ? `准备攻击 ${enemy.damage}点` 
+                : '准备防御';
+        });
     }
 
     enemyDefeated() {
@@ -1128,10 +1132,7 @@ export class SlayTheSpireEngine {
             return;
         }
         
-        // 恢复30%生命值
-        const healAmount = Math.floor(this.state.player.maxHealth * 0.3);
-        this.state.player.health = Math.min(this.state.player.maxHealth, this.state.player.health + healAmount);
-        this.emit('healingApplied', { target: '玩家', amount: healAmount });
+        // 移除自动回血 - 只在商人处或治疗卡回血
         
         // 每层完成获得新卡牌
         this.rewardCardForFloor();
