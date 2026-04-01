@@ -271,7 +271,9 @@ export class SlayTheSpireEngine {
         
         // 格挡效果
         if (card.block) {
-            player.block = (player.block || 0) + card.block;
+            const blockBefore = player.block || 0;
+            player.block = blockBefore + card.block;
+            console.log(`Block applied: ${blockBefore} + ${card.block} = ${player.block}`);
             this.emit('blockApplied', { target: player.name, amount: card.block });
         }
         
@@ -1038,14 +1040,16 @@ export class SlayTheSpireEngine {
                 playerHealthBefore: this.state.player.health
             });
             
-            const actualDamage = Math.max(0, totalDamage - (this.state.player.block || 0));
-            this.state.player.block = Math.max(0, (this.state.player.block || 0) - totalDamage);
+            const playerBlockBefore = this.state.player.block || 0;
+            const actualDamage = Math.max(0, totalDamage - playerBlockBefore);
+            this.state.player.block = Math.max(0, playerBlockBefore - totalDamage);
             this.state.player.health = Math.max(0, this.state.player.health - actualDamage);
             
             console.log(`After damage calculation:`, {
                 actualDamage: actualDamage,
                 playerBlockAfter: this.state.player.block,
-                playerHealthAfter: this.state.player.health
+                playerHealthAfter: this.state.player.health,
+                damageCalculation: `Math.max(0, ${totalDamage} - ${playerBlockBefore}) = ${actualDamage}`
             });
             
             // 发出伤害事件
@@ -1086,9 +1090,17 @@ export class SlayTheSpireEngine {
             return;
         }
         
+        // 开始玩家回合，清空玩家格挡
         this.state.currentPlayer = '玩家';
         this.state.turnCount++;
         this.state.player.energy = this.state.player.maxEnergy;
+        
+        // 清空玩家格挡（格挡只在当前回合有效）
+        const playerBlockBefore = this.state.player.block || 0;
+        this.state.player.block = 0;
+        if (playerBlockBefore > 0) {
+            console.log(`Player block cleared at turn start: ${playerBlockBefore} -> 0`);
+        }
         
         // 应用被动能力
         this.applyPassiveAbilities(this.state.player);
