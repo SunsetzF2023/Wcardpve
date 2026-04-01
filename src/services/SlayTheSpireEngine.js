@@ -86,6 +86,8 @@ export class SlayTheSpireEngine {
     }
 
     spawnEnemy() {
+        console.log(`Spawning enemy for floor ${this.state.floor}`);
+        
         // 根据楼层生成不同强度的敌人
         const enemyTypes = [
             { 
@@ -139,11 +141,19 @@ export class SlayTheSpireEngine {
             }] : [])
         ];
 
-        const availableEnemies = enemyTypes.filter(enemy => 
-            this.state.floor >= 1 || (!enemy.name.includes('精英') && !enemy.name.includes('刺客') && !enemy.name.includes('巨兽') && !enemy.name.includes('领主'))
-        );
+        const availableEnemies = enemyTypes.filter(enemy => {
+            // 根据楼层过滤可用敌人
+            if (this.state.floor >= 9 && !enemy.name.includes('领主')) return false;
+            if (this.state.floor >= 7 && !enemy.name.includes('巨兽') && !enemy.name.includes('领主')) return false;
+            if (this.state.floor >= 5 && !enemy.name.includes('刺客') && !enemy.name.includes('巨兽') && !enemy.name.includes('领主')) return false;
+            if (this.state.floor >= 3 && !enemy.name.includes('精英') && !enemy.name.includes('刺客') && !enemy.name.includes('巨兽') && !enemy.name.includes('领主')) return false;
+            return true;
+        });
+        
+        console.log(`Available enemies: ${availableEnemies.map(e => e.name)}`);
         
         const enemyType = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+        console.log(`Selected enemy: ${enemyType.name}, HP: ${enemyType.health}, DMG: ${enemyType.damage}`);
 
         this.state.enemy = {
             id: 'enemy',
@@ -156,6 +166,7 @@ export class SlayTheSpireEngine {
             nextAction: 'attack'
         };
 
+        console.log('Enemy spawned:', this.state.enemy);
         this.emit('enemySpawned', { enemy: this.state.enemy });
     }
 
@@ -189,28 +200,49 @@ export class SlayTheSpireEngine {
     }
 
     canPlayCard(card, player) {
+        console.log(`Checking if card ${card.name} can be played:`, {
+            cardCost: card.cost,
+            playerEnergy: player.energy,
+            cardTarget: card.target,
+            hasEnemy: !!this.state.enemy,
+            currentPlayer: this.state.currentPlayer
+        });
+        
         if (card.cost > player.energy) {
+            console.log('Cannot play card: not enough energy');
             return false;
         }
         
         // 检查是否有目标
         if (card.target === 'enemy' && !this.state.enemy) {
+            console.log('Cannot play card: no enemy target');
             return false;
         }
         
         if (card.target === 'self' && !player) {
+            console.log('Cannot play card: no self target');
             return false;
         }
         
+        console.log('Card can be played');
         return true;
     }
 
     playCard(cardIndex, player, target) {
         const card = this.state.player.hand[cardIndex];
+        console.log(`Playing card at index ${cardIndex}:`, card);
         
         if (!this.canPlayCard(card, player)) {
+            console.log('Card play failed cannot play check');
             return false;
         }
+        
+        console.log(`Playing card ${card.name}, cost: ${card.cost}`);
+        console.log('Player before play:', {
+            energy: player.energy,
+            handSize: this.state.player.hand.length,
+            health: player.health
+        });
         
         // 消耗能量
         player.energy -= card.cost;
@@ -221,6 +253,12 @@ export class SlayTheSpireEngine {
         // 将牌移到弃牌堆
         this.state.player.hand.splice(cardIndex, 1);
         this.state.player.discard.push(card);
+        
+        console.log('Player after play:', {
+            energy: player.energy,
+            handSize: this.state.player.hand.length,
+            health: player.health
+        });
         
         this.emit('cardPlayed', { card, player, target });
         return true;
@@ -1089,6 +1127,11 @@ export class SlayTheSpireEngine {
         // 重置抽牌堆
         this.state.player.discard.push(...this.state.player.hand);
         this.state.player.hand = [];
+        
+        // 清空格挡和状态效果
+        this.state.player.block = 0;
+        this.state.player.energy = this.state.player.maxEnergy;
+        
         this.prepareDrawPile();
         this.drawInitialHand();
         
