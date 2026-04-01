@@ -1082,9 +1082,12 @@ export class SlayTheSpireEngine {
         this.state.turnCount++;
         this.state.player.energy = this.state.player.maxEnergy;
         
-        // 不要在这里清空玩家格挡！
-        // 格挡应该在玩家结束回合、敌人开始攻击前保持有效
-        // 只有当玩家真正开始新回合时（不是楼层切换）才清空格挡
+        // 清空玩家格挡（每个新玩家回合开始时清空）
+        const playerBlockBefore = this.state.player.block || 0;
+        this.state.player.block = 0;
+        if (playerBlockBefore > 0) {
+            console.log(`Player block cleared at start of player turn: ${playerBlockBefore} -> 0`);
+        }
         
         // 应用被动能力
         this.applyPassiveAbilities(this.state.player);
@@ -1108,12 +1111,13 @@ export class SlayTheSpireEngine {
             }
         });
         
-        // 清空玩家格挡（格挡只在当前回合有效，敌人回合结束后清空）
-        const playerBlockBefore = this.state.player.block || 0;
-        this.state.player.block = 0;
-        if (playerBlockBefore > 0) {
-            console.log(`Player block cleared at end of enemy turn: ${playerBlockBefore} -> 0`);
-        }
+        // 不要在这里清空玩家格挡！
+        // 格挡应该在玩家回合开始时清空，而不是在敌人回合结束时
+        // const playerBlockBefore = this.state.player.block || 0;
+        // this.state.player.block = 0;
+        // if (playerBlockBefore > 0) {
+        //     console.log(`Player block cleared at end of enemy turn: ${playerBlockBefore} -> 0`);
+        // }
         
         // 检查是否所有敌人都被击败
         const aliveEnemies = this.state.enemies.filter(enemy => enemy.health > 0);
