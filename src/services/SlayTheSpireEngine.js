@@ -828,6 +828,13 @@ export class SlayTheSpireEngine {
                     console.log(`Hemokinesis: Player loses ${healthLoss} health, new health: ${player.health}`);
                     this.emit('healthLost', { target: player.name, amount: healthLoss });
                     
+                    // 检查玩家是否因血液操控死亡
+                    if (player.health <= 0) {
+                        console.log(`Player died from Hemokinesis! Health: ${player.health}`);
+                        this.endGame(false); // 玩家失败
+                        return;
+                    }
+                    
                     // 再造成伤害
                     const damageDealt = Math.max(0, card.damage - (target.block || 0));
                     target.block = Math.max(0, (target.block || 0) - card.damage);
@@ -932,6 +939,12 @@ export class SlayTheSpireEngine {
             player.health = Math.min(player.health, player.maxHealth);
             player.decayStacks = Math.max(0, player.decayStacks - 1);
             this.emit('decayEffect', { target: '玩家', maxHpReduction, remainingStacks: player.decayStacks });
+        }
+        
+        // 检查玩家是否在状态效果后死亡
+        if (player.health <= 0) {
+            console.log(`Player died from status effects! Health: ${player.health}`);
+            this.endGame(false); // 玩家失败
         }
     }
 
@@ -1130,6 +1143,13 @@ export class SlayTheSpireEngine {
             console.log(`Player health after attack: ${this.state.player.health}`);
             console.log(`Should player take damage? ${actualDamage > 0 ? 'YES' : 'NO'}`);
             console.log(`=== ENEMY ATTACK END ===`);
+            
+            // 检查玩家是否死亡
+            if (this.state.player.health <= 0) {
+                console.log(`Player died! Health: ${this.state.player.health}`);
+                this.endGame(false); // 玩家失败
+                return;
+            }
             
             // 发出伤害事件
             attackingEnemies.forEach(enemy => {
