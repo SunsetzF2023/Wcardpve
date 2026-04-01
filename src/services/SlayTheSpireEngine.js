@@ -200,6 +200,12 @@ export class SlayTheSpireEngine {
     }
 
     canPlayCard(card, player) {
+        // 检查是否是玩家回合
+        if (this.state.currentPlayer !== '玩家') {
+            console.log('Cannot play card: not player turn');
+            return false;
+        }
+        
         console.log(`Checking if card ${card.name} can be played:`, {
             cardCost: card.cost,
             playerEnergy: player.energy,
@@ -1131,6 +1137,9 @@ export class SlayTheSpireEngine {
         // 清空格挡和状态效果
         this.state.player.block = 0;
         this.state.player.energy = this.state.player.maxEnergy;
+        
+        // 重置回合状态为玩家
+        this.state.currentPlayer = '玩家';
         
         this.prepareDrawPile();
         this.drawInitialHand();

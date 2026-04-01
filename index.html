@@ -373,24 +373,134 @@
             }
 
             showRewardNotification(card) {
-                // 创建奖励通知元素
-                const notification = document.createElement('div');
-                notification.className = 'reward-notification';
-                notification.innerHTML = `
-                    <div class="reward-icon">🎁</div>
-                    <div class="reward-text">
-                        <div class="reward-title">获得新卡牌！</div>
-                        <div class="reward-card-name">${card.name}</div>
+                // 创建华丽的卡牌选择界面
+                const rewardModal = document.createElement('div');
+                rewardModal.className = 'card-reward-modal';
+                rewardModal.innerHTML = `
+                    <div class="reward-overlay"></div>
+                    <div class="reward-container">
+                        <div class="reward-header">
+                            <h2>🎁 选择一张奖励卡牌</h2>
+                            <div class="reward-floor">第 ${this.engine.getGameState().floor} 层</div>
+                        </div>
+                        <div class="reward-cards-container" id="reward-cards">
+                            <!-- 卡牌将在这里动态生成 -->
+                        </div>
                     </div>
                 `;
                 
-                // 添加到页面
-                document.body.appendChild(notification);
+                document.body.appendChild(rewardModal);
                 
-                // 3秒后移除
+                // 生成3张随机卡牌供选择
+                const availableCards = this.getRandomRewardCards(3);
+                const cardsContainer = document.getElementById('reward-cards');
+                
+                availableCards.forEach((rewardCard, index) => {
+                    const cardElement = this.createRewardCardElement(rewardCard, index);
+                    cardsContainer.appendChild(cardElement);
+                    
+                    // 添加延迟动画效果
+                    setTimeout(() => {
+                        cardElement.classList.add('show');
+                    }, index * 200);
+                });
+                
+                // 添加选择事件处理
+                this.setupRewardSelection(availableCards);
+            }
+
+            getRandomRewardCards(count) {
+                const gameState = this.engine.getGameState();
+                const allCards = this.cardManager.cards.filter(card => 
+                    card.type !== '诅咒' && 
+                    !gameState.player.deck.some(deckCard => deckCard.id === card.id)
+                );
+                
+                const selectedCards = [];
+                for (let i = 0; i < count && i < allCards.length; i++) {
+                    const randomIndex = Math.floor(Math.random() * allCards.length);
+                    selectedCards.push(allCards[randomIndex]);
+                    allCards.splice(randomIndex, 1);
+                }
+                
+                return selectedCards;
+            }
+
+            createRewardCardElement(card, index) {
+                const cardElement = document.createElement('div');
+                cardElement.className = `reward-card ${card.rarity || 'common'}`;
+                cardElement.dataset.cardIndex = index;
+                cardElement.innerHTML = `
+                    <div class="reward-card-cost">${card.cost}</div>
+                    <div class="reward-card-type">${this.getCardTypeSymbol(card.type)}</div>
+                    <div class="reward-card-name">${card.name}</div>
+                    <div class="reward-card-description">${card.description}</div>
+                    ${card.damage ? `<div class="reward-card-effect">💥 ${card.damage}</div>` : ''}
+                    ${card.block ? `<div class="reward-card-effect">🛡️ ${card.block}</div>` : ''}
+                    ${card.heal ? `<div class="reward-card-effect">💚 ${card.heal}</div>` : ''}
+                    <div class="reward-card-rarity">${this.getRarityText(card.rarity)}</div>
+                `;
+                
+                return cardElement;
+            }
+
+            getRarityText(rarity) {
+                const rarityMap = {
+                    'common': '普通',
+                    'uncommon': '罕见', 
+                    'rare': '稀有',
+                    'epic': '史诗',
+                    'legendary': '传说'
+                };
+                return rarityMap[rarity] || '普通';
+            }
+
+            setupRewardSelection(availableCards) {
+                const rewardCards = document.querySelectorAll('.reward-card');
+                
+                rewardCards.forEach((cardElement, index) => {
+                    cardElement.addEventListener('click', () => {
+                        const selectedCard = availableCards[index];
+                        
+                        // 添加选择动画
+                        cardElement.classList.add('selected');
+                        
+                        setTimeout(() => {
+                            // 将卡牌加入牌组
+                            const gameState = this.engine.getGameState();
+                            gameState.player.deck.push(selectedCard);
+                            
+                            // 显示选择结果
+                            this.showRewardResult(selectedCard);
+                            
+                            // 移除奖励界面
+                            document.querySelector('.card-reward-modal').remove();
+                        }, 500);
+                    });
+                });
+            }
+
+            showRewardResult(card) {
+                const resultNotification = document.createElement('div');
+                resultNotification.className = 'reward-result-notification';
+                resultNotification.innerHTML = `
+                    <div class="reward-result-icon">✨</div>
+                    <div class="reward-result-text">
+                        <div class="reward-result-title">获得新卡牌！</div>
+                        <div class="reward-result-card-name">${card.name}</div>
+                        <div class="reward-result-description">已加入你的牌组</div>
+                    </div>
+                `;
+                
+                document.body.appendChild(resultNotification);
+                
                 setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
+                    resultNotification.classList.add('show');
+                }, 100);
+                
+                setTimeout(() => {
+                    if (resultNotification.parentNode) {
+                        resultNotification.parentNode.removeChild(resultNotification);
                     }
                 }, 3000);
             }
