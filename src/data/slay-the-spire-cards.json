@@ -129,19 +129,7 @@
       "target": "self",
       "special": "perma_crit"
     },
-    {
-      "id": "perma_dodge",
-      "name": "永久闪避",
-      "type": "能力",
-      "cost": 2,
-      "passive": true,
-      "dodge": 0.2,
-      "rarity": "epic",
-      "description": "每回合开始时获得20%闪避率",
-      "target": "self",
-      "special": "perma_dodge"
-    },
-    {
+        {
       "id": "perma_lifesteal",
       "name": "永久吸血",
       "type": "能力",

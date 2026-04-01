@@ -717,14 +717,7 @@ export class SlayTheSpireEngine {
                     player.critChance += (card.critChance * ability.stacks);
                     this.emit('passiveCritApplied', { chance: player.critChance });
                     break;
-                case 'perma_dodge':
-                    if (!player.dodgeChance) {
-                        player.dodgeChance = 0;
-                    }
-                    player.dodgeChance += (card.dodge * ability.stacks);
-                    this.emit('passiveDodgeApplied', { chance: player.dodgeChance });
-                    break;
-                case 'perma_lifesteal':
+                                case 'perma_lifesteal':
                     if (!player.lifesteal) {
                         player.lifesteal = 0;
                     }
@@ -802,10 +795,13 @@ export class SlayTheSpireEngine {
     executeSpecialEffect(card, player, target) {
         switch (card.special) {
             case 'bash':
-                // Bash: 伤害+易伤
+                // Bash: 伤害+易伤（2层易伤 = 2回合50%额外伤害）
                 if (target) {
-                    target.vulnerable = true;
-                    this.emit('vulnerableApplied', { target: target.name });
+                    if (!target.vulnerableStacks) {
+                        target.vulnerableStacks = 0;
+                    }
+                    target.vulnerableStacks += 2; // Bash施加2层易伤
+                    this.emit('vulnerableApplied', { target: target.name, stacks: target.vulnerableStacks });
                 }
                 break;
             case 'cleave':
@@ -854,20 +850,21 @@ export class SlayTheSpireEngine {
     processPlayerStatusEffects() {
         const player = this.state.player;
         
-        // 燃烧效果
+        // 燃烧效果：每回合减少2层
         if (player.burnStacks && player.burnStacks > 0) {
             const burnDamage = Math.max(0, player.burnStacks - (player.block || 0));
             player.block = Math.max(0, (player.block || 0) - player.burnStacks);
             player.health = Math.max(0, player.health - burnDamage);
-            player.burnStacks = Math.max(0, player.burnStacks - 1);
+            player.burnStacks = Math.max(0, player.burnStacks - 2); // 每回合减少2层
             this.emit('burnDamage', { target: '玩家', damage: burnDamage, remainingStacks: player.burnStacks });
         }
         
-        // 中毒效果
+        // 中毒效果：层数不随回合数变化
         if (player.poisonStacks && player.poisonStacks > 0) {
             const poisonDamage = player.poisonStacks;
             player.health = Math.max(0, player.health - poisonDamage);
-            player.poisonStacks = Math.max(0, player.poisonStacks - 1);
+            // 中毒层数不减少，除非有专门消除的卡牌
+            // player.poisonStacks = Math.max(0, player.poisonStacks - 1);
             this.emit('poisonDamage', { target: '玩家', damage: poisonDamage, remainingStacks: player.poisonStacks });
         }
         
@@ -926,26 +923,27 @@ export class SlayTheSpireEngine {
         
         const enemy = this.state.enemy;
         
-        // 燃烧效果（护盾可以抵挡）
+        // 燃烧效果：每回合减少2层（护盾可以抵挡）
         if (enemy.burnStacks && enemy.burnStacks > 0) {
             const burnDamage = Math.max(0, enemy.burnStacks - (enemy.block || 0));
             enemy.block = Math.max(0, (enemy.block || 0) - enemy.burnStacks);
             enemy.health = Math.max(0, enemy.health - burnDamage);
-            enemy.burnStacks = Math.max(0, enemy.burnStacks - 1);
+            enemy.burnStacks = Math.max(0, enemy.burnStacks - 2); // 每回合减少2层
             this.emit('burnDamage', { target: '敌人', damage: burnDamage, remainingStacks: enemy.burnStacks });
         }
         
         // 冰冻效果
-        if (enemy.freezeStacks && enemy.freezeStacks > 0) {
-            enemy.freezeStacks = Math.max(0, enemy.freezeStacks - 1);
-            this.emit('freezeEffect', { target: '敌人', remainingStacks: enemy.freezeStacks });
+        if (enemy.frozenStacks && enemy.frozenStacks > 0) {
+            enemy.frozenStacks = Math.max(0, enemy.frozenStacks - 1);
+            this.emit('frozenEffect', { target: '敌人', remainingStacks: enemy.frozenStacks });
         }
         
-        // 中毒效果
+        // 中毒效果：层数不随回合数变化
         if (enemy.poisonStacks && enemy.poisonStacks > 0) {
             const poisonDamage = enemy.poisonStacks;
             enemy.health = Math.max(0, enemy.health - poisonDamage);
-            enemy.poisonStacks = Math.max(0, enemy.poisonStacks - 1);
+            // 中毒层数不减少，除非有专门消除的卡牌
+            // enemy.poisonStacks = Math.max(0, enemy.poisonStacks - 1);
             this.emit('poisonDamage', { target: '敌人', damage: poisonDamage, remainingStacks: enemy.poisonStacks });
         }
         
@@ -979,10 +977,10 @@ export class SlayTheSpireEngine {
             this.emit('weakEffect', { target: '敌人', remainingStacks: enemy.weakStacks });
         }
         
-        // 易伤效果
-        if (enemy.vulnerableStacks && enemy.vulnerableStacks > 0) {
-            enemy.vulnerableStacks = Math.max(0, enemy.vulnerableStacks - 1);
-            this.emit('vulnerableEffect', { target: '敌人', remainingStacks: enemy.vulnerableStacks });
+        // 易伤效果：层数作为有效回合数，每回合减少1层
+        if (this.state.player.vulnerableStacks && this.state.player.vulnerableStacks > 0) {
+            this.state.player.vulnerableStacks = Math.max(0, this.state.player.vulnerableStacks - 1);
+            this.emit('vulnerableEffect', { target: '玩家', remainingStacks: this.state.player.vulnerableStacks });
         }
         
         // 沉默效果
@@ -1090,16 +1088,27 @@ export class SlayTheSpireEngine {
             const playerBlockBefore = this.state.player.block || 0;
             const playerHealthBefore = this.state.player.health;
             
+            // 检查玩家易伤效果：每层易伤增加50%伤害，层数作为有效回合数
+            let vulnerableMultiplier = 1.0;
+            if (this.state.player.vulnerableStacks && this.state.player.vulnerableStacks > 0) {
+                vulnerableMultiplier = 1.0 + (this.state.player.vulnerableStacks * 0.5);
+                console.log(`Player vulnerable: ${this.state.player.vulnerableStacks} stacks, damage multiplier: ${vulnerableMultiplier}`);
+            }
+            
+            const damageWithVulnerable = Math.floor(totalDamage * vulnerableMultiplier);
+            
             console.log(`=== ENEMY ATTACK START ===`);
             console.log(`Total incoming damage: ${totalDamage}`);
+            console.log(`Player vulnerable stacks: ${this.state.player.vulnerableStacks || 0}`);
+            console.log(`Damage with vulnerable: ${totalDamage} × ${vulnerableMultiplier} = ${damageWithVulnerable}`);
             console.log(`Player block before attack: ${playerBlockBefore}`);
             console.log(`Player health before attack: ${playerHealthBefore}`);
             
-            const actualDamage = Math.max(0, totalDamage - playerBlockBefore);
-            this.state.player.block = Math.max(0, playerBlockBefore - totalDamage);
+            const actualDamage = Math.max(0, damageWithVulnerable - playerBlockBefore);
+            this.state.player.block = Math.max(0, playerBlockBefore - damageWithVulnerable);
             this.state.player.health = Math.max(0, this.state.player.health - actualDamage);
             
-            console.log(`Damage calculation: Math.max(0, ${totalDamage} - ${playerBlockBefore}) = ${actualDamage}`);
+            console.log(`Damage calculation: Math.max(0, ${damageWithVulnerable} - ${playerBlockBefore}) = ${actualDamage}`);
             console.log(`Player block after attack: ${this.state.player.block}`);
             console.log(`Player health after attack: ${this.state.player.health}`);
             console.log(`Should player take damage? ${actualDamage > 0 ? 'YES' : 'NO'}`);
