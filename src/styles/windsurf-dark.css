@@ -251,17 +251,32 @@ body {
 .info-item {
     background: var(--bg-tertiary);
     padding: 0.5rem 1rem;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid var(--border-primary);
     font-weight: 500;
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
     transition: all var(--transition-fast);
 }
 
 .info-item:hover {
-    background: var(--bg-secondary);
-    border-color: var(--border-accent);
+    border-color: var(--text-accent);
     transform: translateY(-1px);
+}
+
+.gold-item {
+    background: linear-gradient(135deg, var(--bg-tertiary), rgba(247, 186, 46, 0.1));
+    border-color: var(--legendary-gold);
+    color: var(--legendary-gold);
+    font-weight: 700;
+    animation: goldGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes goldGlow {
+    0% {
+        box-shadow: 0 0 10px rgba(247, 186, 46, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(247, 186, 46, 0.6);
+    }
 }
 
 /* 敌人区域 */

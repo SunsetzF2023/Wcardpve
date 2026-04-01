@@ -44,6 +44,7 @@
                     <span class="info-item">楼层: <span id="floor">1</span>/10</span>
                     <span class="info-item">回合: <span id="turn">1</span></span>
                     <span class="info-item">得分: <span id="score">0</span></span>
+                    <span class="info-item gold-item">💰 <span id="gold">50</span></span>
                 </div>
             </div>
 
@@ -249,6 +250,7 @@
                 document.getElementById('floor').textContent = gameState.floor;
                 document.getElementById('turn').textContent = gameState.turnCount;
                 document.getElementById('score').textContent = gameState.score;
+                document.getElementById('gold').textContent = gameState.gold || 50;
 
                 // 更新牌堆信息
                 document.getElementById('deck-count').textContent = 

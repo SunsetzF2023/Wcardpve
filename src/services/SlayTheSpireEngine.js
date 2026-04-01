@@ -21,7 +21,8 @@ export class SlayTheSpireEngine {
             enemies: [], // 改为数组支持多个敌人
             floor: 1,
             turnCount: 1,
-            score: 0
+            score: 0,
+            gold: 50 // 初始金币
         };
         this.listeners = new Map();
         this.cardManager = null;
@@ -1114,18 +1115,20 @@ export class SlayTheSpireEngine {
     }
 
     enemyDefeated() {
+        // 增加分数和金币
         this.state.score += 100;
-        this.emit('enemyDefeated', { enemy: this.state.enemy });
+        this.state.gold += 20 + this.state.floor * 5; // 基础金币 + 楼层奖励
         
-        // 检查是否进入下一层
+        // 进入下一层
         this.state.floor++;
         
+        // 检查游戏胜利
         if (this.state.floor > 10) {
             this.endGame(true);
             return;
         }
         
-        // 恢复一些生命值
+        // 恢复30%生命值
         const healAmount = Math.floor(this.state.player.maxHealth * 0.3);
         this.state.player.health = Math.min(this.state.player.maxHealth, this.state.player.health + healAmount);
         this.emit('healingApplied', { target: '玩家', amount: healAmount });
@@ -1151,6 +1154,7 @@ export class SlayTheSpireEngine {
         this.spawnEnemy();
         
         this.emit('floorChanged', { floor: this.state.floor });
+        this.emit('goldChanged', { gold: this.state.gold });
     }
 
     rewardCardForFloor() {
@@ -1182,6 +1186,81 @@ export class SlayTheSpireEngine {
         
         const pool = rewardPools[Math.min(floor, 10)] || rewardPools[10];
         return pool.map(cardId => this.cardManager.getCardById(cardId)).filter(card => card);
+    }
+
+    // 商人系统
+    visitMerchant() {
+        // 某些楼层有商人（3、6、9层）
+        const merchantFloors = [3, 6, 9];
+        return merchantFloors.includes(this.state.floor);
+    }
+
+    buyHealing() {
+        const healCost = Math.floor(this.state.player.maxHealth * 0.7); // 恢复到满血需要70%最大生命值的金币
+        if (this.state.gold >= healCost) {
+            this.state.gold -= healCost;
+            const healAmount = this.state.player.maxHealth - this.state.player.health;
+            this.state.player.health = this.state.player.maxHealth;
+            this.emit('healingApplied', { target: '玩家', amount: healAmount });
+            this.emit('goldChanged', { gold: this.state.gold });
+            return true;
+        }
+        return false;
+    }
+
+    buyRandomCard() {
+        const cardCost = 15; // 每张随机卡牌15金币
+        if (this.state.gold >= cardCost) {
+            this.state.gold -= cardCost;
+            
+            // 随机抽卡概率
+            const rand = Math.random() * 100;
+            let rarity;
+            if (rand < 15) {
+                rarity = null; // 15% 啥也没有
+            } else if (rand < 65) {
+                rarity = 'common'; // 50% 普通卡牌
+            } else if (rand < 85) {
+                rarity = 'uncommon'; // 20% 罕见卡牌
+            } else if (rand < 95) {
+                rarity = 'rare'; // 10% 稀有卡牌
+            } else if (rand < 99) {
+                rarity = 'epic'; // 4% 史诗卡牌
+            } else {
+                rarity = 'legendary'; // 1% 传说卡牌
+            }
+            
+            if (rarity) {
+                const availableCards = this.cardManager.cards.filter(card => 
+                    card.rarity === rarity && 
+                    !this.state.player.deck.some(deckCard => deckCard.id === card.id)
+                );
+                
+                if (availableCards.length > 0) {
+                    const selectedCard = availableCards[Math.floor(Math.random() * availableCards.length)];
+                    this.state.player.deck.push(selectedCard);
+                    this.emit('cardPurchased', { card: selectedCard, cost: cardCost });
+                    this.emit('goldChanged', { gold: this.state.gold });
+                    return selectedCard;
+                }
+            }
+            
+            this.emit('goldChanged', { gold: this.state.gold });
+            return null;
+        }
+        return false;
+    }
+
+    removeCardFromDeck(cardIndex) {
+        const removeCost = 25; // 移除卡牌需要25金币
+        if (this.state.gold >= removeCost && cardIndex >= 0 && cardIndex < this.state.player.deck.length) {
+            this.state.gold -= removeCost;
+            const removedCard = this.state.player.deck.splice(cardIndex, 1)[0];
+            this.emit('cardRemoved', { card: removedCard, cost: removeCost });
+            this.emit('goldChanged', { gold: this.state.gold });
+            return removedCard;
+        }
+        return null;
     }
 
     endGame(victory) {
