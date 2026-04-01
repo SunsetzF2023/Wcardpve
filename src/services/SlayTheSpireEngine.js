@@ -1163,8 +1163,9 @@ export class SlayTheSpireEngine {
         this.state.player.discard.push(...this.state.player.hand);
         this.state.player.hand = [];
         
-        // 清空格挡和状态效果
-        this.state.player.block = 0;
+        // 不要在这里清空格挡！玩家可能在楼层切换前获得了格挡
+        // 格挡应该在敌人回合结束后清空，而不是在楼层切换时
+        // this.state.player.block = 0;
         this.state.player.energy = this.state.player.maxEnergy;
         
         // 重置回合状态为玩家
