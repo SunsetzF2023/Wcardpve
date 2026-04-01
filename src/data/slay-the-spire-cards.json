@@ -147,9 +147,9 @@
       "type": "能力",
       "cost": 2,
       "passive": true,
-      "lifesteal": 0.1,
+      "lifesteal": 0.05,
       "rarity": "epic",
-      "description": "每回合开始时获得10%吸血效果",
+      "description": "每回合开始时获得5%吸血效果",
       "target": "self",
       "special": "perma_lifesteal"
     },
@@ -1104,9 +1104,9 @@
       "cost": 3,
       "passive": true,
       "burn": 12,
-      "lifesteal": 1,
+      "lifesteal": 0.3,
       "rarity": "legendary",
-      "description": "所有敌人获得12层燃烧。敌人下回合攻击获得1层吸血，持续一回合",
+      "description": "所有敌人获得12层燃烧。敌人下回合攻击获得30%吸血，持续一回合",
       "target": "enemy",
       "special": "phoenix_rebirth"
     },
@@ -1611,6 +1611,75 @@
       "description": "每回合开始时对所有敌人施加3层黑暗（暗影伤害+无法格挡+吞噬护盾）",
       "target": "enemy",
       "special": "void_consumption"
+    },
+    {
+      "id": "enemy_strike",
+      "name": "怪物打击",
+      "type": "攻击",
+      "cost": 1,
+      "damage": 8,
+      "rarity": "common",
+      "description": "造成8点伤害",
+      "target": "enemy",
+      "special": "enemy_strike"
+    },
+    {
+      "id": "enemy_defend",
+      "name": "怪物防御",
+      "type": "技能",
+      "cost": 1,
+      "block": 6,
+      "rarity": "common",
+      "description": "获得6点格挡",
+      "target": "self",
+      "special": "enemy_defend"
+    },
+    {
+      "id": "enemy_enrage",
+      "name": "怪物狂怒",
+      "type": "能力",
+      "cost": 2,
+      "passive": true,
+      "damage": 3,
+      "rarity": "uncommon",
+      "description": "每回合开始时获得3点临时攻击力",
+      "target": "self",
+      "special": "enemy_enrage"
+    },
+    {
+      "id": "enemy_regen",
+      "name": "怪物再生",
+      "type": "能力",
+      "cost": 2,
+      "passive": true,
+      "heal": 2,
+      "rarity": "uncommon",
+      "description": "每回合开始时恢复2点生命值",
+      "target": "self",
+      "special": "enemy_regen"
+    },
+    {
+      "id": "enemy_thorns",
+      "name": "怪物荆棘",
+      "type": "能力",
+      "cost": 2,
+      "passive": true,
+      "thorns": 2,
+      "rarity": "rare",
+      "description": "受到攻击时反弹2点伤害",
+      "target": "self",
+      "special": "enemy_thorns"
+    },
+    {
+      "id": "enemy_summon",
+      "name": "召唤小怪",
+      "type": "能力",
+      "cost": 3,
+      "passive": true,
+      "rarity": "epic",
+      "description": "召唤2个小怪协助战斗",
+      "target": "self",
+      "special": "enemy_summon"
     }
   ]
 }

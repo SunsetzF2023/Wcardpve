@@ -31,6 +31,10 @@
                             <div class="health-text" id="player-hp-text">75/75</div>
                         </div>
                     </div>
+                    <div class="block-container">
+                        <div class="block-orb" id="player-block">0</div>
+                        <span class="block-label">格挡</span>
+                    </div>
                     <div class="energy-container">
                         <div class="energy-orb" id="player-energy">3</div>
                         <span class="energy-label">能量</span>
@@ -239,6 +243,7 @@
                 document.getElementById('player-health-fill').style.width = 
                     `${(gameState.player.health / gameState.player.maxHealth) * 100}%`;
                 document.getElementById('player-energy').textContent = gameState.player.energy;
+                document.getElementById('player-block').textContent = gameState.player.block || 0;
 
                 // 更新敌人信息
                 if (gameState.enemy) {

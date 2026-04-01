@@ -205,6 +205,41 @@ body {
     font-weight: 500;
 }
 
+/* 格挡球 */
+.block-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.block-orb {
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(circle, var(--block-green), #2d5a3d);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    box-shadow: 0 0 20px rgba(63, 185, 80, 0.5);
+    border: 2px solid var(--block-green);
+    transition: all var(--transition-fast);
+}
+
+.block-orb:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(63, 185, 80, 0.7);
+}
+
+.block-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
 /* 游戏信息 */
 .game-info {
     display: flex;

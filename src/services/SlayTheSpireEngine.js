@@ -5,26 +5,24 @@ export class SlayTheSpireEngine {
     constructor() {
         this.state = {
             phase: 'waiting',
-            floor: 1,
             currentPlayer: '玩家',
             player: {
-                id: 'player',
-                name: '玩家',
                 health: 75,
                 maxHealth: 75,
-                block: 0,
                 energy: 3,
                 maxEnergy: 3,
+                block: 0,
                 hand: [],
-                deck: [],
+                drawPile: [],
                 discard: [],
-                drawPile: []
+                deck: [],
+                passiveAbilities: []
             },
-            enemy: null,
-            score: 0,
-            turnCount: 0
+            enemies: [], // 改为数组支持多个敌人
+            floor: 1,
+            turnCount: 1,
+            score: 0
         };
-        
         this.listeners = new Map();
         this.cardManager = null;
     }
@@ -86,88 +84,63 @@ export class SlayTheSpireEngine {
     }
 
     spawnEnemy() {
-        console.log(`Spawning enemy for floor ${this.state.floor}`);
+        console.log(`Spawning enemies for floor ${this.state.floor}`);
         
-        // 根据楼层生成不同强度的敌人
-        const enemyTypes = [
-            { 
-                name: '爪牙', 
-                health: 24 + (this.state.floor - 1) * 8, 
-                damage: 6 + Math.floor((this.state.floor - 1) * 1.5), 
-                intent: '攻击' 
-            },
-            { 
-                name: '蓝史莱姆', 
-                health: 12 + (this.state.floor - 1) * 4, 
-                damage: 3 + Math.floor((this.state.floor - 1) * 0.8), 
-                intent: '攻击' 
-            },
-            { 
-                name: '红史莱姆', 
-                health: 18 + (this.state.floor - 1) * 6, 
-                damage: 8 + Math.floor((this.state.floor - 1) * 1.2), 
-                intent: '攻击' 
-            },
-            { 
-                name: '小喽啰', 
-                health: 30 + (this.state.floor - 1) * 10, 
-                damage: 10 + Math.floor((this.state.floor - 1) * 2), 
-                intent: '攻击' 
-            },
-            // 高楼层新增强敌
-            ...(this.state.floor >= 3 ? [{
-                name: '精英守卫', 
-                health: 40 + (this.state.floor - 3) * 12, 
-                damage: 12 + Math.floor((this.state.floor - 3) * 2.5), 
-                intent: '攻击' 
-            }] : []),
-            ...(this.state.floor >= 5 ? [{
-                name: '暗影刺客', 
-                health: 35 + (this.state.floor - 5) * 8, 
-                damage: 15 + Math.floor((this.state.floor - 5) * 3), 
-                intent: '攻击' 
-            }] : []),
-            ...(this.state.floor >= 7 ? [{
-                name: '熔岩巨兽', 
-                health: 60 + (this.state.floor - 7) * 15, 
-                damage: 18 + Math.floor((this.state.floor - 7) * 3.5), 
-                intent: '攻击' 
-            }] : []),
-            ...(this.state.floor >= 9 ? [{
-                name: '深渊领主', 
-                health: 80 + (this.state.floor - 9) * 20, 
-                damage: 25 + Math.floor((this.state.floor - 9) * 5), 
-                intent: '攻击' 
-            }] : [])
-        ];
-
-        const availableEnemies = enemyTypes.filter(enemy => {
-            // 根据楼层过滤可用敌人
-            if (this.state.floor >= 9 && !enemy.name.includes('领主')) return false;
-            if (this.state.floor >= 7 && !enemy.name.includes('巨兽') && !enemy.name.includes('领主')) return false;
-            if (this.state.floor >= 5 && !enemy.name.includes('刺客') && !enemy.name.includes('巨兽') && !enemy.name.includes('领主')) return false;
-            if (this.state.floor >= 3 && !enemy.name.includes('精英') && !enemy.name.includes('刺客') && !enemy.name.includes('巨兽') && !enemy.name.includes('领主')) return false;
-            return true;
-        });
-        
-        console.log(`Available enemies: ${availableEnemies.map(e => e.name)}`);
-        
-        const enemyType = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
-        console.log(`Selected enemy: ${enemyType.name}, HP: ${enemyType.health}, DMG: ${enemyType.damage}`);
-
-        this.state.enemy = {
-            id: 'enemy',
-            name: enemyType.name,
-            health: enemyType.health,
-            maxHealth: enemyType.health,
-            damage: enemyType.damage,
-            block: 0,
-            intent: enemyType.intent,
-            nextAction: 'attack'
+        // 根据楼层生成敌人配置
+        const floorConfigs = {
+            1: { count: 1, types: ['爪牙', '蓝史莱姆', '红史莱姆', '小喽啰'] },
+            2: { count: 1, types: ['爪牙', '蓝史莱姆', '红史莱姆', '小喽啰'] },
+            3: { count: 2, types: ['爪牙', '蓝史莱姆', '小喽啰', '精英守卫'] },
+            4: { count: 2, types: ['爪牙', '红史莱姆', '小喽啰', '精英守卫'] },
+            5: { count: 2, types: ['小喽啰', '精英守卫', '暗影刺客'] },
+            6: { count: 3, types: ['小喽啰', '精英守卫', '暗影刺客'] },
+            7: { count: 3, types: ['精英守卫', '暗影刺客', '熔岩巨兽'] },
+            8: { count: 3, types: ['暗影刺客', '熔岩巨兽', '深渊领主'] },
+            9: { count: 4, types: ['熔岩巨兽', '深渊领主'] },
+            10: { count: 4, types: ['深渊领主', '深渊领主'] }
         };
 
-        console.log('Enemy spawned:', this.state.enemy);
-        this.emit('enemySpawned', { enemy: this.state.enemy });
+        const config = floorConfigs[Math.min(this.state.floor, 10)];
+        const availableTypes = config.types;
+        
+        // 清空敌人数组
+        this.state.enemies = [];
+        
+        // 生成敌人
+        for (let i = 0; i < config.count; i++) {
+            const enemyType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+            const enemy = this.createEnemy(enemyType, this.state.floor);
+            this.state.enemies.push(enemy);
+        }
+        
+        console.log(`Generated ${this.state.enemies.length} enemies:`, this.state.enemies.map(e => e.name));
+        this.emit('enemiesSpawned', { enemies: this.state.enemies });
+    }
+
+    createEnemy(enemyType, floor) {
+        const baseStats = {
+            '爪牙': { health: 24, damage: 6 },
+            '蓝史莱姆': { health: 12, damage: 3 },
+            '红史莱姆': { health: 18, damage: 8 },
+            '小喽啰': { health: 30, damage: 10 },
+            '精英守卫': { health: 40, damage: 12 },
+            '暗影刺客': { health: 35, damage: 15 },
+            '熔岩巨兽': { health: 60, damage: 18 },
+            '深渊领主': { health: 80, damage: 25 }
+        };
+
+        const base = baseStats[enemyType] || baseStats['爪牙'];
+        
+        return {
+            id: `enemy_${Date.now()}_${Math.random()}`,
+            name: enemyType,
+            health: base.health + (floor - 1) * Math.floor(base.health * 0.3),
+            maxHealth: base.health + (floor - 1) * Math.floor(base.health * 0.3),
+            damage: base.damage + Math.floor((floor - 1) * base.damage * 0.2),
+            block: 0,
+            intent: '攻击',
+            nextAction: 'attack'
+        };
     }
 
     drawInitialHand() {
@@ -797,18 +770,12 @@ export class SlayTheSpireEngine {
         }
         
         this.emit('turnEnded', { player: '玩家' });
-        
-        // 处理所有状态效果
         this.processStatusEffects();
         
-        // 清空格挡
+        // 格挡只在当前回合有效，回合结束时清零
         this.state.player.block = 0;
-        
-        // 将手牌移到弃牌堆
         this.state.player.discard.push(...this.state.player.hand);
         this.state.player.hand = [];
-        
-        // 切换到敌人回合
         this.state.currentPlayer = '敌人';
         this.executeEnemyTurn();
     }
