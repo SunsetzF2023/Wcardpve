@@ -805,8 +805,75 @@ export class SlayTheSpireEngine {
                 }
                 break;
             case 'cleave':
-                // Cleave: 范围伤害
-                this.emit('cleaveDamage', { damage: card.damage });
+                // Cleave: 范围伤害 - 对所有敌人造成伤害
+                const aliveEnemies = this.state.enemies.filter(enemy => enemy.health > 0);
+                console.log(`Cleave: Hitting ${aliveEnemies.length} enemies for ${card.damage} damage each`);
+                
+                aliveEnemies.forEach(enemy => {
+                    const damageDealt = Math.max(0, card.damage - (enemy.block || 0));
+                    enemy.block = Math.max(0, (enemy.block || 0) - card.damage);
+                    enemy.health = Math.max(0, enemy.health - damageDealt);
+                    
+                    console.log(`Cleave damage to ${enemy.name}: ${damageDealt} (block: ${enemy.block || 0})`);
+                    this.emit('damageDealt', { attacker: player.name, target: enemy.name, damage: damageDealt });
+                });
+                
+                this.emit('cleaveDamage', { damage: card.damage, targetsHit: aliveEnemies.length });
+                break;
+            case 'intimidate':
+                // Intimidate: 对所有敌人施加3层虚弱
+                const allEnemiesForIntimidate = this.state.enemies.filter(enemy => enemy.health > 0);
+                console.log(`Intimidate: Applying 3 weak stacks to ${allEnemiesForIntimidate.length} enemies`);
+                
+                allEnemiesForIntimidate.forEach(enemy => {
+                    if (!enemy.weakStacks) enemy.weakStacks = 0;
+                    enemy.weakStacks += 3;
+                    console.log(`Intimidate: ${enemy.name} now has ${enemy.weakStacks} weak stacks`);
+                    this.emit('weakApplied', { target: enemy.name, stacks: enemy.weakStacks });
+                });
+                break;
+            case 'reaper':
+                // Reaper: 对所有敌人造成等同于最大生命值20%的伤害
+                const allEnemiesForReaper = this.state.enemies.filter(enemy => enemy.health > 0);
+                const reaperDamage = Math.floor(player.maxHealth * 0.2);
+                console.log(`Reaper: Hitting ${allEnemiesForReaper.length} enemies for ${reaperDamage} damage (20% of max HP)`);
+                
+                allEnemiesForReaper.forEach(enemy => {
+                    const damageDealt = Math.max(0, reaperDamage - (enemy.block || 0));
+                    enemy.block = Math.max(0, (enemy.block || 0) - reaperDamage);
+                    enemy.health = Math.max(0, enemy.health - damageDealt);
+                    
+                    console.log(`Reaper damage to ${enemy.name}: ${damageDealt}`);
+                    this.emit('damageDealt', { attacker: player.name, target: enemy.name, damage: damageDealt });
+                });
+                break;
+            case 'sweeping_beam':
+                // Sweeping Beam: 对所有敌人造成7点伤害
+                const allEnemiesForBeam = this.state.enemies.filter(enemy => enemy.health > 0);
+                console.log(`Sweeping Beam: Hitting ${allEnemiesForBeam.length} enemies for ${card.damage} damage each`);
+                
+                allEnemiesForBeam.forEach(enemy => {
+                    const damageDealt = Math.max(0, card.damage - (enemy.block || 0));
+                    enemy.block = Math.max(0, (enemy.block || 0) - card.damage);
+                    enemy.health = Math.max(0, enemy.health - damageDealt);
+                    
+                    console.log(`Sweeping Beam damage to ${enemy.name}: ${damageDealt}`);
+                    this.emit('damageDealt', { attacker: player.name, target: enemy.name, damage: damageDealt });
+                });
+                break;
+            case 'thunder_clap':
+                // Thunder Clap: 对所有敌人造成4点伤害
+                const allEnemiesForThunder = this.state.enemies.filter(enemy => enemy.health > 0);
+                console.log(`Thunder Clap: Hitting ${allEnemiesForThunder.length} enemies for ${card.damage} damage each`);
+                
+                allEnemiesForThunder.forEach(enemy => {
+                    const damageDealt = Math.max(0, card.damage - (enemy.block || 0));
+                    enemy.block = Math.max(0, (enemy.block || 0) - card.damage);
+                    enemy.health = Math.max(0, enemy.health - damageDealt);
+                    
+                    console.log(`Thunder Clap damage to ${enemy.name}: ${damageDealt}`);
+                    this.emit('damageDealt', { attacker: player.name, target: enemy.name, damage: damageDealt });
+                });
                 break;
             case 'iron_wave':
                 // Iron Wave: 伤害+格挡
@@ -873,6 +940,8 @@ export class SlayTheSpireEngine {
 
     processPlayerStatusEffects() {
         const player = this.state.player;
+        console.log(`=== PROCESSING PLAYER STATUS EFFECTS ===`);
+        console.log(`Player status: HP=${player.health}, Block=${player.block || 0}, Burn=${player.burnStacks || 0}, Poison=${player.poisonStacks || 0}, Weak=${player.weakStacks || 0}`);
         
         // 燃烧效果：每回合减少2层
         if (player.burnStacks && player.burnStacks > 0) {
@@ -880,6 +949,7 @@ export class SlayTheSpireEngine {
             player.block = Math.max(0, (player.block || 0) - player.burnStacks);
             player.health = Math.max(0, player.health - burnDamage);
             player.burnStacks = Math.max(0, player.burnStacks - 2); // 每回合减少2层
+            console.log(`Burn effect: ${burnDamage} damage dealt, ${player.burnStacks} stacks remaining`);
             this.emit('burnDamage', { target: '玩家', damage: burnDamage, remainingStacks: player.burnStacks });
         }
         
@@ -889,6 +959,7 @@ export class SlayTheSpireEngine {
             player.health = Math.max(0, player.health - poisonDamage);
             // 中毒层数不减少，除非有专门消除的卡牌
             // player.poisonStacks = Math.max(0, player.poisonStacks - 1);
+            console.log(`Poison effect: ${poisonDamage} damage dealt, ${player.poisonStacks} stacks remaining`);
             this.emit('poisonDamage', { target: '玩家', damage: poisonDamage, remainingStacks: player.poisonStacks });
         }
         
@@ -952,6 +1023,8 @@ export class SlayTheSpireEngine {
         if (!this.state.enemy) return;
         
         const enemy = this.state.enemy;
+        console.log(`=== PROCESSING ENEMY STATUS EFFECTS ===`);
+        console.log(`Enemy ${enemy.name} status: HP=${enemy.health}, Block=${enemy.block || 0}, Burn=${enemy.burnStacks || 0}, Poison=${enemy.poisonStacks || 0}, Weak=${enemy.weakStacks || 0}`);
         
         // 燃烧效果：每回合减少2层（护盾可以抵挡）
         if (enemy.burnStacks && enemy.burnStacks > 0) {
@@ -959,7 +1032,8 @@ export class SlayTheSpireEngine {
             enemy.block = Math.max(0, (enemy.block || 0) - enemy.burnStacks);
             enemy.health = Math.max(0, enemy.health - burnDamage);
             enemy.burnStacks = Math.max(0, enemy.burnStacks - 2); // 每回合减少2层
-            this.emit('burnDamage', { target: '敌人', damage: burnDamage, remainingStacks: enemy.burnStacks });
+            console.log(`Enemy burn effect: ${burnDamage} damage dealt, ${enemy.burnStacks} stacks remaining`);
+            this.emit('burnDamage', { target: enemy.name, damage: burnDamage, remainingStacks: enemy.burnStacks });
         }
         
         // 冰冻效果
