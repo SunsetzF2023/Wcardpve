@@ -204,7 +204,7 @@
                 });
 
                 document.getElementById('restart-btn').addEventListener('click', () => {
-                    this.restartGame();
+                    location.reload();
                 });
 
                 // 键盘事件
@@ -337,9 +337,9 @@
             playCard(index) {
                 const gameState = this.engine.getGameState();
                 const card = gameState.player.hand[index];
-                const target = card.target === 'enemy' ? gameState.enemy : gameState.player;
+                const selectedEnemyIndex = this.selectedEnemyIndex;
                 
-                if (this.engine.playCard(index, gameState.player, target)) {
+                if (this.engine.playCard(index, gameState.player, selectedEnemyIndex)) {
                     // 卡牌成功打出
                 }
             }
@@ -509,6 +509,9 @@
                 enemies.forEach((enemy, index) => {
                     const enemyCard = document.createElement('div');
                     enemyCard.className = 'enemy-card';
+                    if (enemy.health <= 0) {
+                        enemyCard.classList.add('dead');
+                    }
                     enemyCard.innerHTML = `
                         <div class="enemy-name">${enemy.name}</div>
                         <div class="enemy-health-bar">
@@ -518,7 +521,29 @@
                         <div class="enemy-intent">${enemy.intent || '攻击'}</div>
                         ${enemy.block > 0 ? `<div class="enemy-block">格挡: ${enemy.block}</div>` : ''}
                     `;
+                    
+                    // 添加点击事件选择敌人目标
+                    if (enemy.health > 0) {
+                        enemyCard.addEventListener('click', () => {
+                            this.selectEnemyTarget(index);
+                        });
+                        enemyCard.style.cursor = 'pointer';
+                    }
+                    
                     container.appendChild(enemyCard);
+                });
+            }
+            
+            selectEnemyTarget(enemyIndex) {
+                this.selectedEnemyIndex = enemyIndex;
+                // 更新UI显示选中的敌人
+                const enemyCards = document.querySelectorAll('.enemy-card');
+                enemyCards.forEach((card, index) => {
+                    if (index === enemyIndex) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
                 });
             }
         }
