@@ -566,13 +566,16 @@ export class SlayTheSpireEngine {
                     break;
                 case 'spirit_drain':
                     // 灵魂汲取：每回合对所有敌人施加灵魂
-                    if (this.state.enemy) {
-                        if (!this.state.enemy.soulStacks) {
-                            this.state.enemy.soulStacks = 0;
-                        }
-                        this.state.enemy.soulStacks += (card.soul * ability.stacks);
-                        this.emit('spiritDrainApplied', { soulStacks: this.state.enemy.soulStacks });
-                    }
+                    const allEnemiesForSpirit = this.state.enemies.filter(enemy => enemy.health > 0);
+                    console.log(`Spirit Drain: Applying ${card.soul} soul stacks to ${allEnemiesForSpirit.length} enemies`);
+                    
+                    allEnemiesForSpirit.forEach(enemy => {
+                        if (!enemy.soulStacks) enemy.soulStacks = 0;
+                        enemy.soulStacks += (card.soul * ability.stacks);
+                        console.log(`Spirit Drain: ${enemy.name} now has ${enemy.soulStacks} soul stacks`);
+                    });
+                    
+                    this.emit('spiritDrainApplied', { soulStacks: card.soul * ability.stacks, enemiesAffected: allEnemiesForSpirit.length });
                     break;
                 case 'dream_eater':
                     // 噬梦者：每回合对所有敌人施加噩梦
@@ -941,7 +944,7 @@ export class SlayTheSpireEngine {
     processPlayerStatusEffects() {
         const player = this.state.player;
         console.log(`=== PROCESSING PLAYER STATUS EFFECTS ===`);
-        console.log(`Player status: HP=${player.health}, Block=${player.block || 0}, Burn=${player.burnStacks || 0}, Poison=${player.poisonStacks || 0}, Weak=${player.weakStacks || 0}`);
+        console.log(`Player status: HP=${player.health}, Block=${player.block || 0}, Burn=${player.burnStacks || 0}, Poison=${player.poisonStacks || 0}, Weak=${player.weakStacks || 0}, Soul=${player.soulStacks || 0}`);
         
         // 燃烧效果：每回合减少2层
         if (player.burnStacks && player.burnStacks > 0) {
@@ -992,6 +995,7 @@ export class SlayTheSpireEngine {
             const soulDamage = player.soulStacks;
             player.health = Math.max(0, player.health - soulDamage);
             player.soulStacks = Math.max(0, player.soulStacks - 1);
+            console.log(`Soul effect: ${soulDamage} damage dealt, ${player.soulStacks} stacks remaining`);
             this.emit('soulDamage', { target: '玩家', damage: soulDamage, remainingStacks: player.soulStacks });
         }
         
@@ -1024,7 +1028,7 @@ export class SlayTheSpireEngine {
         
         const enemy = this.state.enemy;
         console.log(`=== PROCESSING ENEMY STATUS EFFECTS ===`);
-        console.log(`Enemy ${enemy.name} status: HP=${enemy.health}, Block=${enemy.block || 0}, Burn=${enemy.burnStacks || 0}, Poison=${enemy.poisonStacks || 0}, Weak=${enemy.weakStacks || 0}`);
+        console.log(`Enemy ${enemy.name} status: HP=${enemy.health}, Block=${enemy.block || 0}, Burn=${enemy.burnStacks || 0}, Poison=${enemy.poisonStacks || 0}, Weak=${enemy.weakStacks || 0}, Soul=${enemy.soulStacks || 0}`);
         
         // 燃烧效果：每回合减少2层（护盾可以抵挡）
         if (enemy.burnStacks && enemy.burnStacks > 0) {
@@ -1131,7 +1135,8 @@ export class SlayTheSpireEngine {
             const soulDamage = enemy.soulStacks;
             enemy.health = Math.max(0, enemy.health - soulDamage);
             enemy.soulStacks = Math.max(0, enemy.soulStacks - 1);
-            this.emit('soulDamage', { target: '敌人', damage: soulDamage, remainingStacks: enemy.soulStacks });
+            console.log(`Enemy soul effect: ${soulDamage} damage dealt, ${enemy.soulStacks} stacks remaining`);
+            this.emit('soulDamage', { target: enemy.name, damage: soulDamage, remainingStacks: enemy.soulStacks });
         }
         
         // 噩梦效果

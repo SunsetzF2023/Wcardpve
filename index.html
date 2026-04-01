@@ -194,6 +194,12 @@
                     this.showRewardNotification(data.card);
                 });
 
+                this.engine.on('gameOver', (data) => {
+                    console.log(`Game Over: ${data.winner} won, score: ${data.score}, floor: ${data.floor}`);
+                    this.showGameOver(data.winner === '玩家');
+                    this.addLog(`游戏结束！${data.winner === '玩家' ? '胜利' : '失败'} - 最终得分: ${data.score}`, 'system');
+                });
+
                 // UI事件
                 document.getElementById('draw-card-btn').addEventListener('click', () => {
                     this.engine.drawCard();
@@ -363,10 +369,26 @@
                 const title = document.getElementById('game-over-title');
                 const message = document.getElementById('game-over-message');
                 
-                title.textContent = victory ? '🎉 胜利！' : '😔 失败';
-                message.textContent = victory ? '恭喜你击败了所有敌人！' : '敌人击败了你，再接再厉！';
+                // 强制更新生命值显示为0
+                if (!victory) {
+                    document.getElementById('player-hp-text').textContent = '0/75';
+                    document.getElementById('player-health-fill').style.width = '0%';
+                }
+                
+                title.textContent = victory ? '🎉 胜利！' : '� 游戏结束';
+                message.textContent = victory ? 
+                    `恭喜你击败了所有敌人！\n最终得分: ${this.engine.getGameState().score}` : 
+                    `你被敌人击败了...\n最终得分: ${this.engine.getGameState().score}\n到达楼层: ${this.engine.getGameState().floor}`;
                 
                 modal.style.display = 'flex';
+                
+                // 添加震动效果表示死亡
+                if (!victory) {
+                    document.body.classList.add('death-shake');
+                    setTimeout(() => {
+                        document.body.classList.remove('death-shake');
+                    }, 500);
+                }
             }
 
             showRewardNotification(card) {
