@@ -1017,24 +1017,53 @@ export class SlayTheSpireEngine {
             return;
         }
         
-        // 每个活着的敌人执行行动
+        // 计算所有敌人的总伤害，然后统一计算格挡
+        let totalDamage = 0;
+        const attackingEnemies = [];
+        
         this.state.enemies.forEach(enemy => {
-            if (enemy.health > 0) {
+            if (enemy.health > 0 && enemy.nextAction === 'attack') {
+                totalDamage += enemy.damage;
+                attackingEnemies.push(enemy);
                 this.emit('enemyTurn', { action: enemy.intent, enemy: enemy.name });
-                
-                // 执行敌人行动
-                switch (enemy.nextAction) {
-                    case 'attack':
-                        const damageDealt = Math.max(0, enemy.damage - (this.state.player.block || 0));
-                        this.state.player.block = Math.max(0, (this.state.player.block || 0) - enemy.damage);
-                        this.state.player.health = Math.max(0, this.state.player.health - damageDealt);
-                        this.emit('damageDealt', { attacker: enemy.name, target: '玩家', damage: damageDealt });
-                        break;
-                    case 'defend':
-                        enemy.block = (enemy.block || 0) + 5;
-                        this.emit('blockApplied', { target: enemy.name, amount: 5 });
-                        break;
-                }
+            }
+        });
+        
+        // 统一计算格挡和伤害
+        if (totalDamage > 0) {
+            console.log(`Enemy attack calculation:`, {
+                totalDamage: totalDamage,
+                playerBlock: this.state.player.block || 0,
+                playerHealthBefore: this.state.player.health
+            });
+            
+            const actualDamage = Math.max(0, totalDamage - (this.state.player.block || 0));
+            this.state.player.block = Math.max(0, (this.state.player.block || 0) - totalDamage);
+            this.state.player.health = Math.max(0, this.state.player.health - actualDamage);
+            
+            console.log(`After damage calculation:`, {
+                actualDamage: actualDamage,
+                playerBlockAfter: this.state.player.block,
+                playerHealthAfter: this.state.player.health
+            });
+            
+            // 发出伤害事件
+            attackingEnemies.forEach(enemy => {
+                this.emit('damageDealt', { 
+                    attacker: enemy.name, 
+                    target: '玩家', 
+                    damage: Math.min(enemy.damage, actualDamage),
+                    blocked: Math.min(enemy.damage, this.state.player.block || 0)
+                });
+            });
+        }
+        
+        // 处理防御行动
+        this.state.enemies.forEach(enemy => {
+            if (enemy.health > 0 && enemy.nextAction === 'defend') {
+                enemy.block = (enemy.block || 0) + 5;
+                this.emit('blockApplied', { target: enemy.name, amount: 5 });
+                this.emit('enemyTurn', { action: enemy.intent, enemy: enemy.name });
             }
         });
         
