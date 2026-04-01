@@ -848,7 +848,8 @@
       "rarity": "rare",
       "description": "每当你获得格挡时，对随机敌人造成2点伤害",
       "target": "self",
-      "special": "juggernaut"
+      "special": "juggernaut",
+      "passive": true
     },
     {
       "id": "limit_break",

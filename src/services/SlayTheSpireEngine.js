@@ -292,6 +292,9 @@ export class SlayTheSpireEngine {
             player.block = blockBefore + card.block;
             console.log(`Block applied: ${blockBefore} + ${card.block} = ${player.block}`);
             this.emit('blockApplied', { target: player.name, amount: card.block });
+            
+            // 检查主宰被动能力：每当你获得格挡时，对随机敌人造成2点伤害
+            this.checkJuggernautEffect(player, card.block);
         }
         
         // 治疗效果
@@ -762,6 +765,38 @@ export class SlayTheSpireEngine {
                     break;
             }
         });
+    }
+
+    checkJuggernautEffect(player, blockAmount) {
+        // 检查玩家是否有主宰被动能力
+        if (player.passiveAbilities && player.passiveAbilities.length > 0) {
+            const juggernautAbility = player.passiveAbilities.find(ability => ability.id === 'juggernaut');
+            if (juggernautAbility) {
+                // 对随机敌人造成2点伤害（每点格挡造成2点伤害）
+                const damagePerBlock = 2;
+                const totalDamage = blockAmount * damagePerBlock;
+                
+                // 找到所有活着的敌人
+                const aliveEnemies = this.state.enemies.filter(enemy => enemy.health > 0);
+                if (aliveEnemies.length > 0) {
+                    // 选择随机敌人
+                    const randomEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+                    
+                    // 造成伤害
+                    const damageDealt = Math.max(0, totalDamage - (randomEnemy.block || 0));
+                    randomEnemy.block = Math.max(0, (randomEnemy.block || 0) - totalDamage);
+                    randomEnemy.health = Math.max(0, randomEnemy.health - damageDealt);
+                    
+                    console.log(`Juggernaut effect: Dealt ${damageDealt} damage to ${randomEnemy.name} (from ${blockAmount} block)`);
+                    this.emit('juggernautDamage', { 
+                        attacker: player.name, 
+                        target: randomEnemy.name, 
+                        damage: damageDealt,
+                        blockAmount: blockAmount 
+                    });
+                }
+            }
+        }
     }
 
     executeSpecialEffect(card, player, target) {
