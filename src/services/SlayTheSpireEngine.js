@@ -183,7 +183,7 @@ export class SlayTheSpireEngine {
             cardCost: card.cost,
             playerEnergy: player.energy,
             cardTarget: card.target,
-            hasEnemy: !!this.state.enemy,
+            hasEnemies: this.state.enemies.length > 0,
             currentPlayer: this.state.currentPlayer
         });
         
@@ -193,8 +193,8 @@ export class SlayTheSpireEngine {
         }
         
         // 检查是否有目标
-        if (card.target === 'enemy' && !this.state.enemy) {
-            console.log('Cannot play card: no enemy target');
+        if (card.target === 'enemy' && this.state.enemies.length === 0) {
+            console.log('Cannot play card: no enemy targets');
             return false;
         }
         
@@ -244,8 +244,8 @@ export class SlayTheSpireEngine {
     }
 
     executeCardEffect(card, player, target) {
-        // 伤害效果
-        if (card.damage && target) {
+        // 伤害效果 - 支持多敌人
+        if (card.damage) {
             let actualDamage = card.damage;
             
             // 检查暴击
@@ -254,11 +254,18 @@ export class SlayTheSpireEngine {
                 this.emit('criticalHit', { card, actualDamage });
             }
             
-            const damageDealt = Math.max(0, actualDamage - (target.block || 0));
-            target.block = Math.max(0, (target.block || 0) - actualDamage);
-            target.health = Math.max(0, target.health - damageDealt);
+            // 如果没有指定目标，选择第一个活着的敌人
+            if (!target) {
+                target = this.state.enemies.find(enemy => enemy.health > 0);
+            }
             
-            this.emit('damageDealt', { attacker: player.name, target: target.name, damage: damageDealt });
+            if (target) {
+                const damageDealt = Math.max(0, actualDamage - (target.block || 0));
+                target.block = Math.max(0, (target.block || 0) - actualDamage);
+                target.health = Math.max(0, target.health - damageDealt);
+                
+                this.emit('damageDealt', { attacker: player.name, target: target.name, damage: damageDealt });
+            }
         }
         
         // 格挡效果
@@ -1005,52 +1012,52 @@ export class SlayTheSpireEngine {
     }
 
     executeEnemyTurn() {
-        if (!this.state.enemy || this.state.enemy.health <= 0) {
+        if (!this.state.enemies || this.state.enemies.length === 0) {
             this.endEnemyTurn();
             return;
         }
         
-        this.emit('enemyTurn', { action: this.state.enemy.intent });
-        
-        // 执行敌人行动
-        switch (this.state.enemy.nextAction) {
-            case 'attack':
-                const damageDealt = Math.max(0, this.state.enemy.damage - (this.state.player.block || 0));
-                this.state.player.block = Math.max(0, (this.state.player.block || 0) - this.state.enemy.damage);
-                this.state.player.health = Math.max(0, this.state.player.health - damageDealt);
-                this.emit('damageDealt', { attacker: '敌人', target: '玩家', damage: damageDealt });
-                break;
-            case 'defend':
-                this.state.enemy.block = (this.state.enemy.block || 0) + 5;
-                this.emit('blockApplied', { target: '敌人', amount: 5 });
-                break;
-        }
+        // 每个活着的敌人执行行动
+        this.state.enemies.forEach(enemy => {
+            if (enemy.health > 0) {
+                this.emit('enemyTurn', { action: enemy.intent, enemy: enemy.name });
+                
+                // 执行敌人行动
+                switch (enemy.nextAction) {
+                    case 'attack':
+                        const damageDealt = Math.max(0, enemy.damage - (this.state.player.block || 0));
+                        this.state.player.block = Math.max(0, (this.state.player.block || 0) - enemy.damage);
+                        this.state.player.health = Math.max(0, this.state.player.health - damageDealt);
+                        this.emit('damageDealt', { attacker: enemy.name, target: '玩家', damage: damageDealt });
+                        break;
+                    case 'defend':
+                        enemy.block = (enemy.block || 0) + 5;
+                        this.emit('blockApplied', { target: enemy.name, amount: 5 });
+                        break;
+                }
+            }
+        });
         
         this.endEnemyTurn();
     }
 
     endEnemyTurn() {
-        // 清空敌人格挡
-        if (this.state.enemy) {
-            this.state.enemy.block = 0;
-        }
+        // 清空所有敌人格挡
+        this.state.enemies.forEach(enemy => {
+            if (enemy.block) {
+                enemy.block = 0;
+            }
+        });
         
-        // 检查游戏结束
-        if (this.state.player.health <= 0) {
-            this.endGame(false);
-            return;
-        }
-        
-        if (this.state.enemy && this.state.enemy.health <= 0) {
+        // 检查是否所有敌人都被击败
+        const aliveEnemies = this.state.enemies.filter(enemy => enemy.health > 0);
+        if (aliveEnemies.length === 0) {
             this.enemyDefeated();
             return;
         }
         
-        // 切换到玩家回合
         this.state.currentPlayer = '玩家';
         this.state.turnCount++;
-        
-        // 恢复能量
         this.state.player.energy = this.state.player.maxEnergy;
         
         // 应用被动能力

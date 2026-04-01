@@ -337,6 +337,42 @@ body {
     font-weight: 500;
 }
 
+.enemy-block {
+    font-size: 0.875rem;
+    color: var(--block-green);
+    text-align: center;
+    margin-top: 0.25rem;
+    font-weight: 600;
+}
+
+/* 多敌人容器 */
+.enemies-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.enemy-card {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-primary);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.enemy-card:hover {
+    border-color: var(--text-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.enemy-card.dead {
+    opacity: 0.5;
+    filter: grayscale(50%);
+}
+
 /* 抽牌堆区域 */
 .deck-area {
     position: absolute;

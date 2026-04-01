@@ -49,13 +49,8 @@
 
             <!-- 敌人区域 -->
             <div class="enemy-area">
-                <div class="enemy-card">
-                    <div class="enemy-name" id="enemy-name">敌人</div>
-                    <div class="enemy-health-bar">
-                        <div class="enemy-health-fill" id="enemy-health-fill"></div>
-                    </div>
-                    <div class="enemy-hp-text" id="enemy-hp-text">24/24</div>
-                    <div class="enemy-intent" id="enemy-intent">攻击</div>
+                <div class="enemies-container" id="enemies-container">
+                    <!-- 敌人将在这里动态生成 -->
                 </div>
             </div>
 
@@ -246,13 +241,8 @@
                 document.getElementById('player-block').textContent = gameState.player.block || 0;
 
                 // 更新敌人信息
-                if (gameState.enemy) {
-                    document.getElementById('enemy-name').textContent = gameState.enemy.name;
-                    document.getElementById('enemy-hp-text').textContent = 
-                        `${gameState.enemy.health}/${gameState.enemy.maxHealth}`;
-                    document.getElementById('enemy-health-fill').style.width = 
-                        `${(gameState.enemy.health / gameState.enemy.maxHealth) * 100}%`;
-                    document.getElementById('enemy-intent').textContent = gameState.enemy.intent || '准备中';
+                if (gameState.enemies && gameState.enemies.length > 0) {
+                    this.updateEnemiesDisplay(gameState.enemies);
                 }
 
                 // 更新游戏信息
@@ -510,8 +500,24 @@
                 }, 3000);
             }
 
-            restartGame() {
-                location.reload();
+            updateEnemiesDisplay(enemies) {
+                const container = document.getElementById('enemies-container');
+                container.innerHTML = '';
+                
+                enemies.forEach((enemy, index) => {
+                    const enemyCard = document.createElement('div');
+                    enemyCard.className = 'enemy-card';
+                    enemyCard.innerHTML = `
+                        <div class="enemy-name">${enemy.name}</div>
+                        <div class="enemy-health-bar">
+                            <div class="enemy-health-fill" style="width: ${(enemy.health / enemy.maxHealth) * 100}%"></div>
+                        </div>
+                        <div class="enemy-hp-text">${enemy.health}/${enemy.maxHealth}</div>
+                        <div class="enemy-intent">${enemy.intent || '攻击'}</div>
+                        ${enemy.block > 0 ? `<div class="enemy-block">格挡: ${enemy.block}</div>` : ''}
+                    `;
+                    container.appendChild(enemyCard);
+                });
             }
         }
 
