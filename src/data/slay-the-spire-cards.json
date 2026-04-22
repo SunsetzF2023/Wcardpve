@@ -1,0 +1,423 @@
+{
+  "cards": [
+    {
+      "id": "strike",
+      "name": "strike",
+      "type": "attack",
+      "cost": 1,
+      "damage": 6,
+      "rarity": "common",
+      "description": "Deal 6 damage",
+      "target": "enemy"
+    },
+    {
+      "id": "defend",
+      "name": "defend",
+      "type": "skill",
+      "cost": 1,
+      "block": 5,
+      "rarity": "common",
+      "description": "Gain 5 block",
+      "target": "self"
+    },
+    {
+      "id": "bash",
+      "name": "bash",
+      "type": "attack",
+      "cost": 2,
+      "damage": 8,
+      "rarity": "uncommon",
+      "description": "Deal 8 damage and apply 2 vulnerable",
+      "target": "enemy",
+      "special": "bash"
+    },
+    {
+      "id": "cleave",
+      "name": "cleave",
+      "type": "attack",
+      "cost": 1,
+      "damage": 8,
+      "special": "cleave",
+      "rarity": "uncommon",
+      "description": "Deal 8 damage to ALL enemies",
+      "target": "enemy"
+    },
+    {
+      "id": "iron_wave",
+      "name": "iron_wave",
+      "type": "attack",
+      "cost": 1,
+      "damage": 5,
+      "block": 5,
+      "rarity": "uncommon",
+      "description": "Deal 5 damage and gain 5 block",
+      "target": "enemy",
+      "special": "iron_wave"
+    },
+    {
+      "id": "hemokinesis",
+      "name": "hemokinesis",
+      "type": "attack",
+      "cost": 1,
+      "damage": 7,
+      "rarity": "uncommon",
+      "description": "Lose 3 HP, deal 7 damage",
+      "target": "enemy",
+      "special": "hemokinesis"
+    },
+    {
+      "id": "flame_barrier",
+      "name": "flame_barrier",
+      "type": "skill",
+      "cost": 2,
+      "block": 12,
+      "rarity": "uncommon",
+      "description": "Gain 12 block. Attacker takes 6 damage",
+      "target": "self",
+      "special": "flame_barrier"
+    },
+    {
+      "id": "cold_snap",
+      "name": "cold_snap",
+      "type": "skill",
+      "cost": 2,
+      "block": 8,
+      "rarity": "uncommon",
+      "description": "Gain 8 block and apply 2 weak to ALL enemies",
+      "target": "self",
+      "special": "cold_snap"
+    },
+    {
+      "id": "ghostly_armor",
+      "name": "ghostly_armor",
+      "type": "skill",
+      "cost": 1,
+      "block": 8,
+      "rarity": "rare",
+      "description": "Gain 8 block. Cannot attack this turn",
+      "target": "self",
+      "special": "ghostly_armor"
+    },
+    {
+      "id": "infernal_blade",
+      "name": "infernal_blade",
+      "type": "attack",
+      "cost": 2,
+      "damage": 12,
+      "rarity": "rare",
+      "description": "Deal 12 damage",
+      "target": "enemy"
+    },
+    {
+      "id": "intimidate",
+      "name": "intimidate",
+      "type": "skill",
+      "cost": 0,
+      "rarity": "uncommon",
+      "description": "Apply 3 weak to ALL enemies",
+      "target": "enemy",
+      "special": "intimidate"
+    },
+    {
+      "id": "reaper",
+      "name": "reaper",
+      "type": "attack",
+      "cost": 2,
+      "damage": 0,
+      "rarity": "uncommon",
+      "description": "Deal damage equal to 20% of your max HP to ALL enemies",
+      "target": "enemy",
+      "special": "reaper"
+    },
+    {
+      "id": "sweeping_beam",
+      "name": "sweeping_beam",
+      "type": "attack",
+      "cost": 2,
+      "damage": 7,
+      "rarity": "uncommon",
+      "description": "Deal 7 damage to ALL enemies",
+      "target": "enemy",
+      "special": "sweeping_beam"
+    },
+    {
+      "id": "thunder_clap",
+      "name": "thunder_clap",
+      "type": "attack",
+      "cost": 1,
+      "damage": 4,
+      "rarity": "uncommon",
+      "description": "Deal 4 damage to ALL enemies",
+      "target": "enemy",
+      "special": "thunder_clap"
+    },
+    {
+      "id": "pommel_strike",
+      "name": "pommel_strike",
+      "type": "attack",
+      "cost": 1,
+      "damage": 2,
+      "rarity": "uncommon",
+      "description": "Deal 2 damage and draw 2 cards",
+      "target": "enemy",
+      "special": "pommel_strike"
+    },
+    {
+      "id": "power_through",
+      "name": "power_through",
+      "type": "skill",
+      "cost": 1,
+      "block": 10,
+      "rarity": "uncommon",
+      "description": "Gain 10 block. Take 1 damage",
+      "target": "self",
+      "special": "power_through"
+    },
+    {
+      "id": "rage",
+      "name": "rage",
+      "type": "skill",
+      "cost": 0,
+      "rarity": "uncommon",
+      "description": "Your attacks deal +3 damage this turn",
+      "target": "self",
+      "special": "rage"
+    },
+    {
+      "id": "rampage",
+      "name": "rampage",
+      "type": "attack",
+      "cost": 1,
+      "damage": 8,
+      "rarity": "uncommon",
+      "description": "Deal 8 damage. +2 damage each time this card is played",
+      "target": "enemy",
+      "special": "rampage"
+    },
+    {
+      "id": "reckless_charge",
+      "name": "reckless_charge",
+      "type": "attack",
+      "cost": 1,
+      "damage": 10,
+      "rarity": "uncommon",
+      "description": "Deal 10 damage. Take 1 damage",
+      "target": "enemy",
+      "special": "reckless_charge"
+    },
+    {
+      "id": "seeing_red",
+      "name": "seeing_red",
+      "type": "skill",
+      "cost": 0,
+      "rarity": "uncommon",
+      "description": "Gain 2 energy",
+      "target": "self",
+      "special": "seeing_red"
+    },
+    {
+      "id": "sever_soul",
+      "name": "sever_soul",
+      "type": "attack",
+      "cost": 2,
+      "damage": 16,
+      "rarity": "rare",
+      "description": "Deal 16 damage. Remove all skill cards from hand",
+      "target": "enemy",
+      "special": "sever_soul"
+    },
+    {
+      "id": "shrug_it_off",
+      "name": "shrug_it_off",
+      "type": "skill",
+      "cost": 1,
+      "block": 8,
+      "heal": 4,
+      "rarity": "uncommon",
+      "description": "Gain 8 block and heal 4 HP",
+      "target": "self",
+      "special": "shrug_it_off"
+    },
+    {
+      "id": "sunder",
+      "name": "sunder",
+      "type": "attack",
+      "cost": 2,
+      "damage": 8,
+      "rarity": "uncommon",
+      "description": "Deal 8 damage. +2 damage per enemy block",
+      "target": "enemy",
+      "special": "sunder"
+    },
+    {
+      "id": "tackle",
+      "name": "tackle",
+      "type": "attack",
+      "cost": 1,
+      "damage": 8,
+      "rarity": "uncommon",
+      "description": "Deal 8 damage",
+      "target": "enemy"
+    },
+    {
+      "id": "twin_strike",
+      "name": "twin_strike",
+      "type": "attack",
+      "cost": 1,
+      "damage": 5,
+      "rarity": "uncommon",
+      "description": "Attack twice for 5 damage each",
+      "target": "enemy",
+      "special": "twin_strike"
+    },
+    {
+      "id": "upercut",
+      "name": "upercut",
+      "type": "attack",
+      "cost": 2,
+      "damage": 13,
+      "rarity": "uncommon",
+      "description": "Deal 13 damage. Enemy gains 1 weak",
+      "target": "enemy",
+      "special": "upercut"
+    },
+    {
+      "id": "war_cry",
+      "name": "war_cry",
+      "type": "skill",
+      "cost": 0,
+      "rarity": "uncommon",
+      "description": "Draw 2 cards",
+      "target": "self",
+      "special": "war_cry"
+    },
+    {
+      "id": "whirlwind",
+      "name": "whirlwind",
+      "type": "attack",
+      "cost": 1,
+      "damage": 5,
+      "rarity": "uncommon",
+      "description": "Deal 5 damage to ALL enemies",
+      "target": "enemy",
+      "special": "whirlwind"
+    },
+    {
+      "id": "immolate",
+      "name": "immolate",
+      "type": "attack",
+      "cost": 2,
+      "damage": 21,
+      "rarity": "rare",
+      "description": "Deal 21 damage to ALL enemies",
+      "target": "enemy",
+      "special": "immolate"
+    },
+    {
+      "id": "limit_break",
+      "name": "limit_break",
+      "type": "skill",
+      "cost": 1,
+      "rarity": "rare",
+      "description": "Double your block",
+      "target": "self",
+      "special": "limit_break"
+    },
+    {
+      "id": "armaments",
+      "name": "armaments",
+      "type": "skill",
+      "cost": 1,
+      "block": 5,
+      "rarity": "uncommon",
+      "description": "Gain 5 block. Upgrade all attack cards in hand",
+      "target": "self",
+      "special": "armaments"
+    },
+    {
+      "id": "metallicize",
+      "name": "metallicize",
+      "type": "power",
+      "cost": 1,
+      "rarity": "rare",
+      "description": "At start of turn, gain 3 block",
+      "target": "self",
+      "special": "metallicize"
+    },
+    {
+      "id": "combust",
+      "name": "combust",
+      "type": "power",
+      "cost": 1,
+      "rarity": "rare",
+      "description": "At end of turn, lose 1 HP and deal 4 damage to ALL enemies",
+      "target": "self",
+      "special": "combust"
+    },
+    {
+      "id": "corruption",
+      "name": "corruption",
+      "type": "power",
+      "cost": 2,
+      "rarity": "rare",
+      "description": "Your attacks cost 0 and deal double damage",
+      "target": "self",
+      "special": "corruption"
+    },
+    {
+      "id": "dead_poison",
+      "name": "dead_poison",
+      "type": "attack",
+      "cost": 1,
+      "damage": 4,
+      "poison": 5,
+      "rarity": "uncommon",
+      "description": "Deal 4 damage and apply 5 poison",
+      "target": "enemy",
+      "special": "dead_poison"
+    },
+    {
+      "id": "poison_dart",
+      "name": "poison_dart",
+      "type": "attack",
+      "cost": 1,
+      "damage": 4,
+      "poison": 4,
+      "rarity": "uncommon",
+      "description": "Deal 4 damage and apply 4 poison",
+      "target": "enemy",
+      "special": "poison_dart"
+    },
+    {
+      "id": "burn_curse",
+      "name": "burn_curse",
+      "type": "attack",
+      "cost": 1,
+      "burn": 3,
+      "rarity": "uncommon",
+      "description": "Apply 3 burn to enemy",
+      "target": "enemy",
+      "special": "burn_curse"
+    },
+    {
+      "id": "weakness_curse",
+      "name": "weakness_curse",
+      "type": "skill",
+      "cost": 1,
+      "weak": 2,
+      "rarity": "uncommon",
+      "description": "Apply 2 weak to enemy",
+      "target": "enemy",
+      "special": "weakness_curse"
+    },
+    {
+      "id": "wound",
+      "name": "wound",
+      "type": "curse",
+      "cost": 1,
+      "rarity": "curse",
+      "description": "Unplayable",
+      "target": "self"
+    }
+  ]
+}
