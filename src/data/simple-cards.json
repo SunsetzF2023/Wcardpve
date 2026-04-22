@@ -1,0 +1,1132 @@
+{
+  "cards": [
+    {
+      "id": "spades_3",
+      "suit": "spades",
+      "rank": "3",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "每8秒对敌人造成3点伤害"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "hearts_3",
+      "suit": "hearts",
+      "rank": "3",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "每8秒对敌人造成3点伤害，5%暴击率"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "diamonds_3",
+      "suit": "diamonds",
+      "rank": "3",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "每8秒对敌人造成3点伤害"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_3",
+      "suit": "clubs",
+      "rank": "3",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "每8秒对敌人造成3点伤害"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "spades_2",
+      "suit": "spades",
+      "rank": "2",
+      "type": "防",
+      "baseEffect": {
+        "shield": 2,
+        "effect": "获得2点护甲"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "hearts_2",
+      "suit": "hearts",
+      "rank": "2",
+      "type": "防",
+      "baseEffect": {
+        "shield": 2,
+        "effect": "获得2点护甲，5%治疗效果加成"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "diamonds_2",
+      "suit": "diamonds",
+      "rank": "2",
+      "type": "防",
+      "baseEffect": {
+        "shield": 2,
+        "effect": "获得2点护甲"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_2",
+      "suit": "clubs",
+      "rank": "2",
+      "type": "防",
+      "baseEffect": {
+        "shield": 2,
+        "effect": "获得2点护甲"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "spades_4",
+      "suit": "spades",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "effect": "获得4点护甲，持续2回合"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "hearts_4",
+      "suit": "hearts",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "effect": "获得4点护甲，持续2回合，5%反弹伤害"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "diamonds_4",
+      "suit": "diamonds",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "effect": "获得4点护甲，持续2回合"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_4",
+      "suit": "clubs",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "effect": "获得4点护甲，持续2回合"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "spades_5",
+      "suit": "spades",
+      "rank": "5",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "对单个敌人造成5点伤害，无视护甲"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_5",
+      "suit": "hearts",
+      "rank": "5",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "对单个敌人造成5点伤害，10%暴击率"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_5",
+      "suit": "diamonds",
+      "rank": "5",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "对单个敌人造成5点伤害"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_5",
+      "suit": "clubs",
+      "rank": "5",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "对单个敌人造成5点伤害"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_6",
+      "suit": "spades",
+      "rank": "6",
+      "type": "守",
+      "baseEffect": {
+        "damage": 2,
+        "shield": 2,
+        "effect": "对周围敌人造成2点伤害，获得2点护甲"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_6",
+      "suit": "hearts",
+      "rank": "6",
+      "type": "守",
+      "baseEffect": {
+        "damage": 2,
+        "shield": 2,
+        "effect": "对周围敌人造成2点伤害，获得2点护甲，5%治疗效果"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_6",
+      "suit": "diamonds",
+      "rank": "6",
+      "type": "守",
+      "baseEffect": {
+        "damage": 2,
+        "shield": 2,
+        "effect": "对周围敌人造成2点伤害，获得2点护甲"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_6",
+      "suit": "clubs",
+      "rank": "6",
+      "type": "守",
+      "baseEffect": {
+        "damage": 2,
+        "shield": 2,
+        "effect": "对周围敌人造成2点伤害，获得2点护甲"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_7",
+      "suit": "spades",
+      "rank": "7",
+      "type": "幽",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "隐身3秒，下次攻击伤害+3",
+        "stealth": 3
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_7",
+      "suit": "hearts",
+      "rank": "7",
+      "type": "幽",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "隐身3秒，下次攻击伤害+3，10%暴击率",
+        "stealth": 3
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_7",
+      "suit": "diamonds",
+      "rank": "7",
+      "type": "幽",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "隐身3秒，下次攻击伤害+3",
+        "stealth": 3
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_7",
+      "suit": "clubs",
+      "rank": "7",
+      "type": "幽",
+      "baseEffect": {
+        "damage": 3,
+        "effect": "隐身3秒，下次攻击伤害+3",
+        "stealth": 3
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_8",
+      "suit": "spades",
+      "rank": "8",
+      "type": "护",
+      "baseEffect": {
+        "healing": 4,
+        "effect": "每回合恢复4点生命值"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_8",
+      "suit": "hearts",
+      "rank": "8",
+      "type": "护",
+      "baseEffect": {
+        "healing": 4,
+        "effect": "每回合恢复4点生命值，5%治疗效果加成"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_8",
+      "suit": "diamonds",
+      "rank": "8",
+      "type": "护",
+      "baseEffect": {
+        "healing": 4,
+        "effect": "每回合恢复4点生命值"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_8",
+      "suit": "clubs",
+      "rank": "8",
+      "type": "护",
+      "baseEffect": {
+        "healing": 4,
+        "effect": "每回合恢复4点生命值"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_9",
+      "suit": "spades",
+      "rank": "9",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 6,
+        "effect": "对所有敌人造成6点伤害"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_9",
+      "suit": "hearts",
+      "rank": "9",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 6,
+        "effect": "对所有敌人造成6点伤害，15%暴击率"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_9",
+      "suit": "diamonds",
+      "rank": "9",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 6,
+        "effect": "对所有敌人造成6点伤害"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_9",
+      "suit": "clubs",
+      "rank": "9",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 6,
+        "effect": "对所有敌人造成6点伤害"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_10",
+      "suit": "spades",
+      "rank": "10",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 8,
+        "effect": "对所有敌人造成8点伤害"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_10",
+      "suit": "hearts",
+      "rank": "10",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 8,
+        "effect": "对所有敌人造成8点伤害，20%暴击率"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_10",
+      "suit": "diamonds",
+      "rank": "10",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 8,
+        "effect": "对所有敌人造成8点伤害"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_10",
+      "suit": "clubs",
+      "rank": "10",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 8,
+        "effect": "对所有敌人造成8点伤害"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_j",
+      "suit": "spades",
+      "rank": "J",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 7,
+        "effect": "对单个敌人造成7点伤害，必中"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_j",
+      "suit": "hearts",
+      "rank": "J",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 7,
+        "effect": "对单个敌人造成7点伤害，必中，25%暴击率"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_j",
+      "suit": "diamonds",
+      "rank": "J",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 7,
+        "effect": "对单个敌人造成7点伤害，必中"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_j",
+      "suit": "clubs",
+      "rank": "J",
+      "type": "狙",
+      "baseEffect": {
+        "damage": 7,
+        "effect": "对单个敌人造成7点伤害，必中"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_q",
+      "suit": "spades",
+      "rank": "Q",
+      "type": "守",
+      "baseEffect": {
+        "damage": 4,
+        "shield": 4,
+        "healing": 4,
+        "effect": "对周围造成4点伤害，获得4点护甲，恢复4点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_q",
+      "suit": "hearts",
+      "rank": "Q",
+      "type": "守",
+      "baseEffect": {
+        "damage": 4,
+        "shield": 4,
+        "healing": 4,
+        "effect": "对周围造成4点伤害，获得4点护甲，恢复4点生命值，30%效果加成"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_q",
+      "suit": "diamonds",
+      "rank": "Q",
+      "type": "守",
+      "baseEffect": {
+        "damage": 4,
+        "shield": 4,
+        "healing": 4,
+        "effect": "对周围造成4点伤害，获得4点护甲，恢复4点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_q",
+      "suit": "clubs",
+      "rank": "Q",
+      "type": "守",
+      "baseEffect": {
+        "damage": 4,
+        "shield": 4,
+        "healing": 4,
+        "effect": "对周围造成4点伤害，获得4点护甲，恢复4点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_k",
+      "suit": "spades",
+      "rank": "K",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 10,
+        "effect": "对所有敌人造成10点伤害，清空对方护甲"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_k",
+      "suit": "hearts",
+      "rank": "K",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 10,
+        "effect": "对所有敌人造成10点伤害，清空对方护甲，30%暴击率"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_k",
+      "suit": "diamonds",
+      "rank": "K",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 10,
+        "effect": "对所有敌人造成10点伤害，清空对方护甲"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_k",
+      "suit": "clubs",
+      "rank": "K",
+      "type": "炮",
+      "baseEffect": {
+        "damage": 10,
+        "effect": "对所有敌人造成10点伤害，清空对方护甲"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_a",
+      "suit": "spades",
+      "rank": "A",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 1,
+        "effect": "每6秒造成1点伤害，攻击速度极快"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "hearts_a",
+      "suit": "hearts",
+      "rank": "A",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 1,
+        "effect": "每6秒造成1点伤害，攻击速度极快，50%暴击率"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "diamonds_a",
+      "suit": "diamonds",
+      "rank": "A",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 1,
+        "effect": "每6秒造成1点伤害，但攻击速度极快"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "clubs_a",
+      "suit": "clubs",
+      "rank": "A",
+      "type": "兵",
+      "baseEffect": {
+        "damage": 1,
+        "effect": "每6秒造成1点伤害，但攻击速度极快"
+      },
+      "rarity": "common"
+    },
+    {
+      "id": "spades_2",
+      "suit": "spades",
+      "rank": "2",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 2,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_2",
+      "suit": "hearts",
+      "rank": "2",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 2,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果，燃烧伤害+20%"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_2",
+      "suit": "diamonds",
+      "rank": "2",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 2,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_2",
+      "suit": "clubs",
+      "rank": "2",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 2,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_3",
+      "suit": "spades",
+      "rank": "3",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 3,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "hearts_3",
+      "suit": "hearts",
+      "rank": "3",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 3,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果，燃烧伤害+30%"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "diamonds_3",
+      "suit": "diamonds",
+      "rank": "3",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 3,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "clubs_3",
+      "suit": "clubs",
+      "rank": "3",
+      "type": "燃",
+      "baseEffect": {
+        "damage": 3,
+        "burn": true,
+        "effect": "每10秒对敌人增添6层燃烧效果"
+      },
+      "rarity": "rare"
+    },
+    {
+      "id": "spades_4",
+      "suit": "spades",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "passive": true,
+        "effect": "被动：场上每有一个友方卡牌，获得30点护盾"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_4",
+      "suit": "hearts",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "passive": true,
+        "effect": "被动：场上每有一个友方卡牌，获得30点护盾，护盾效果+15%"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_4",
+      "suit": "diamonds",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "passive": true,
+        "effect": "被动：场上每有一个友方卡牌，获得30点护盾"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_4",
+      "suit": "clubs",
+      "rank": "4",
+      "type": "盾",
+      "baseEffect": {
+        "shield": 4,
+        "passive": true,
+        "effect": "被动：场上每有一个友方卡牌，获得30点护盾"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_5",
+      "suit": "spades",
+      "rank": "5",
+      "type": "强",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "每12秒对敌人造成5点伤害，对所有友方卡牌伤害提高10%"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_5",
+      "suit": "hearts",
+      "rank": "5",
+      "type": "强",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "每12秒对敌人造成5点伤害，对所有友方卡牌伤害提高10%，暴击率+15%"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_5",
+      "suit": "diamonds",
+      "rank": "5",
+      "type": "强",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "每12秒对敌人造成5点伤害，对所有友方卡牌伤害提高10%"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_5",
+      "suit": "clubs",
+      "rank": "5",
+      "type": "强",
+      "baseEffect": {
+        "damage": 5,
+        "effect": "每12秒对敌人造成5点伤害，对所有友方卡牌伤害提高10%"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_6",
+      "suit": "spades",
+      "rank": "6",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 6,
+        "effect": "每8秒为所有友方角色恢复6点生命值"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "hearts_6",
+      "suit": "hearts",
+      "rank": "6",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 6,
+        "effect": "每8秒为所有友方角色恢复6点生命值，治疗效果+20%"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "diamonds_6",
+      "suit": "diamonds",
+      "rank": "6",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 6,
+        "effect": "每8秒为所有友方角色恢复6点生命值"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "clubs_6",
+      "suit": "clubs",
+      "rank": "6",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 6,
+        "effect": "每8秒为所有友方角色恢复6点生命值"
+      },
+      "rarity": "epic"
+    },
+    {
+      "id": "spades_7",
+      "suit": "spades",
+      "rank": "7",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 8,
+        "effect": "每6秒为所有友方角色恢复8点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_7",
+      "suit": "hearts",
+      "rank": "7",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 8,
+        "effect": "每6秒为所有友方角色恢复8点生命值，治疗效果+30%"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_7",
+      "suit": "diamonds",
+      "rank": "7",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 8,
+        "effect": "每6秒为所有友方角色恢复8点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_7",
+      "suit": "clubs",
+      "rank": "7",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 8,
+        "effect": "每6秒为所有友方角色恢复8点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_8",
+      "suit": "spades",
+      "rank": "8",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 10,
+        "effect": "每5秒为所有友方角色恢复10点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_8",
+      "suit": "hearts",
+      "rank": "8",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 10,
+        "effect": "每5秒为所有友方角色恢复10点生命值，治疗效果+40%"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_8",
+      "suit": "diamonds",
+      "rank": "8",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 10,
+        "effect": "每5秒为所有友方角色恢复10点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_8",
+      "suit": "clubs",
+      "rank": "8",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 10,
+        "effect": "每5秒为所有友方角色恢复10点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_9",
+      "suit": "spades",
+      "rank": "9",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 12,
+        "effect": "每4秒为所有友方角色恢复12点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_9",
+      "suit": "hearts",
+      "rank": "9",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 12,
+        "effect": "每4秒为所有友方角色恢复12点生命值，治疗效果+50%"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_9",
+      "suit": "diamonds",
+      "rank": "9",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 12,
+        "effect": "每4秒为所有友方角色恢复12点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_9",
+      "suit": "clubs",
+      "rank": "9",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 12,
+        "effect": "每4秒为所有友方角色恢复12点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_10",
+      "suit": "spades",
+      "rank": "10",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 15,
+        "effect": "每3秒为所有友方角色恢复15点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_10",
+      "suit": "hearts",
+      "rank": "10",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 15,
+        "effect": "每3秒为所有友方角色恢复15点生命值，治疗效果+60%"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_10",
+      "suit": "diamonds",
+      "rank": "10",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 15,
+        "effect": "每3秒为所有友方角色恢复15点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_10",
+      "suit": "clubs",
+      "rank": "10",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 15,
+        "effect": "每3秒为所有友方角色恢复15点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_j",
+      "suit": "spades",
+      "rank": "J",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 20,
+        "effect": "每2秒为所有友方角色恢复20点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_j",
+      "suit": "hearts",
+      "rank": "J",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 20,
+        "effect": "每2秒为所有友方角色恢复20点生命值，治疗效果+80%"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_j",
+      "suit": "diamonds",
+      "rank": "J",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 20,
+        "effect": "每2秒为所有友方角色恢复20点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_j",
+      "suit": "clubs",
+      "rank": "J",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 20,
+        "effect": "每2秒为所有友方角色恢复20点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_q",
+      "suit": "spades",
+      "rank": "Q",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 25,
+        "effect": "每2秒为所有友方角色恢复25点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_q",
+      "suit": "hearts",
+      "rank": "Q",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 25,
+        "effect": "每2秒为所有友方角色恢复25点生命值，治疗效果+100%"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_q",
+      "suit": "diamonds",
+      "rank": "Q",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 25,
+        "effect": "每2秒为所有友方角色恢复25点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_q",
+      "suit": "clubs",
+      "rank": "Q",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 25,
+        "effect": "每2秒为所有友方角色恢复25点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "spades_k",
+      "suit": "spades",
+      "rank": "K",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 30,
+        "effect": "每1秒为所有友方角色恢复30点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "hearts_k",
+      "suit": "hearts",
+      "rank": "K",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 30,
+        "effect": "每1秒为所有友方角色恢复30点生命值，治疗效果+150%"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "diamonds_k",
+      "suit": "diamonds",
+      "rank": "K",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 30,
+        "effect": "每1秒为所有友方角色恢复30点生命值"
+      },
+      "rarity": "legendary"
+    },
+    {
+      "id": "clubs_k",
+      "suit": "clubs",
+      "rank": "K",
+      "type": "愈",
+      "baseEffect": {
+        "healing": 30,
+        "effect": "每1秒为所有友方角色恢复30点生命值"
+      },
+      "rarity": "legendary"
+    }
+  ]
+}

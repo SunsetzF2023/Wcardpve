@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杀戮尖塔 - 卡牌构筑Roguelike</title>
+    <link rel="stylesheet" href="./src/styles/slay-the-spire.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎴</text></svg>">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 顶部信息栏 -->
+        <div class="game-header">
+            <div class="player-info">
+                <div class="health-container">
+                    <div class="health-bar">
+                        <div class="health-fill" id="player-health-fill"></div>
+                        <div class="health-text" id="player-hp-text">75/75</div>
+                    </div>
+                </div>
+                <div class="energy-container">
+                    <div class="energy-orb" id="player-energy">3</div>
+                    <span style="color: #f7fafc;">能量</span>
+                </div>
+            </div>
+            <div class="game-info">
+                <span>楼层: <span id="floor">1</span>/10</span>
+                <span>回合: <span id="turn">1</span></span>
+                <span>得分: <span id="score">0</span></span>
+            </div>
+        </div>
+
+        <!-- 敌人区域 -->
+        <div class="enemy-area">
+            <div class="enemy-card">
+                <div class="enemy-name" id="enemy-name">敌人</div>
+                <div class="enemy-health-bar">
+                    <div class="enemy-health-fill" id="enemy-health-fill"></div>
+                </div>
+                <div class="enemy-hp-text" id="enemy-hp-text">24/24</div>
+                <div class="enemy-intent" id="enemy-intent">攻击</div>
+            </div>
+        </div>
+
+        <!-- 抽牌堆区域 -->
+        <div class="deck-area">
+            <div class="deck-info">
+                <h4>抽牌堆</h4>
+                <div class="deck-count" id="deck-count">0</div>
+                <div class="discard-count">弃牌: <span id="discard-count">0</span></div>
+            </div>
+        </div>
+
+        <!-- 战斗日志 -->
+        <div class="combat-log" id="combat-log">
+            <div class="log-entry system">游戏开始！</div>
+        </div>
+
+        <!-- 手牌区域 -->
+        <div class="hand-area" id="hand-area"></div>
+
+        <!-- 动作按钮 -->
+        <div class="action-buttons">
+            <button class="action-btn" id="draw-card-btn">抽牌 (D)</button>
+            <button class="action-btn end-turn-btn" id="end-turn-btn">结束回合 (空格)</button>
+            <button class="action-btn" id="restart-btn">重新开始 (R)</button>
+        </div>
+
+        <!-- 游戏结束模态框 -->
+        <div class="game-over-modal" id="game-over-modal">
+            <div class="modal-content">
+                <h2 id="game-over-title">游戏结束</h2>
+                <p id="game-over-message">消息</p>
+                <button class="restart-btn" onclick="restartGame()">重新开始</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SlayTheSpireEngine } from './src/services/SlayTheSpireEngine.js';
+        import { SlayTheSpireCardManager } from './src/services/SlayTheSpireCardManager.js';
+
+        class SlayTheSpireGame {
+            constructor() {
+                this.engine = new SlayTheSpireEngine();
+                this.cardManager = new SlayTheSpireCardManager();
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.cardManager.loadCards();
+                    this.engine.initialize(this.cardManager);
+                    this.setupEventListeners();
+                    this.startGame();
+                } catch (error) {
+                    console.error('Failed to initialize Slay the Spire game:', error);
+                    this.addLog('游戏初始化失败: ' + error.message, 'system');
+                }
+            }
+
+            setupEventListeners() {
+                // 游戏引擎事件
+                this.engine.on('gameStarted', (data) => {
+                    this.addLog('游戏开始！', 'system');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('cardDrawn', (data) => {
+                    this.updateDisplay();
+                });
+
+                this.engine.on('cardPlayed', (data) => {
+                    this.addLog(`打出 ${data.card.name}`, 'player');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('damageDealt', (data) => {
+                    this.addLog(`${data.attacker} 对 ${data.target} 造成 ${data.damage} 点伤害`, 'player');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('blockApplied', (data) => {
+                    this.addLog(`${data.target} 获得 ${data.amount} 点格挡`, 'player');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('healingApplied', (data) => {
+                    this.addLog(`${data.target} 恢复 ${data.amount} 点生命值`, 'player');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('turnStarted', (data) => {
+                    this.addLog(`${data.player} 的回合开始`, 'system');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('turnEnded', (data) => {
+                    this.addLog(`${data.player} 的回合结束`, 'system');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('enemyTurn', (data) => {
+                    this.addLog(`敌人 ${data.action}`, 'enemy');
+                    this.updateDisplay();
+                });
+
+                this.engine.on('gameOver', (data) => {
+                    this.addLog(`游戏结束！${data.winner} 获胜！`, 'system');
+                    this.showGameOver(data.winner === '玩家');
+                });
+
+                // UI事件
+                document.getElementById('draw-card-btn').addEventListener('click', () => {
+                    this.engine.drawCard();
+                });
+
+                document.getElementById('end-turn-btn').addEventListener('click', () => {
+                    this.engine.endTurn();
+                });
+
+                document.getElementById('restart-btn').addEventListener('click', () => {
+                    this.restartGame();
+                });
+
+                // 键盘事件
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key.toLowerCase()) {
+                        case 'd':
+                            this.engine.drawCard();
+                            break;
+                        case ' ':
+                            e.preventDefault();
+                            this.engine.endTurn();
+                            break;
+                        case 'r':
+                            this.restartGame();
+                            break;
+                    }
+                });
+            }
+
+            startGame() {
+                this.engine.startGame();
+            }
+
+            updateDisplay() {
+                const gameState = this.engine.getGameState();
+                
+                if (!gameState || !gameState.player) return;
+
+                // 更新玩家信息
+                document.getElementById('player-hp-text').textContent = 
+                    `${gameState.player.health}/${gameState.player.maxHealth}`;
+                document.getElementById('player-health-fill').style.width = 
+                    `${(gameState.player.health / gameState.player.maxHealth) * 100}%`;
+                document.getElementById('player-energy').textContent = gameState.player.energy;
+
+                // 更新敌人信息
+                if (gameState.enemy) {
+                    document.getElementById('enemy-name').textContent = gameState.enemy.name;
+                    document.getElementById('enemy-hp-text').textContent = 
+                        `${gameState.enemy.health}/${gameState.enemy.maxHealth}`;
+                    document.getElementById('enemy-health-fill').style.width = 
+                        `${(gameState.enemy.health / gameState.enemy.maxHealth) * 100}%`;
+                    document.getElementById('enemy-intent').textContent = gameState.enemy.intent || '准备中';
+                }
+
+                // 更新游戏信息
+                document.getElementById('floor').textContent = gameState.floor;
+                document.getElementById('turn').textContent = gameState.turnCount;
+                document.getElementById('score').textContent = gameState.score;
+
+                // 更新牌堆信息
+                document.getElementById('deck-count').textContent = 
+                    (gameState.player.drawPile || []).length;
+                document.getElementById('discard-count').textContent = 
+                    (gameState.player.discard || []).length;
+
+                // 更新手牌
+                this.updateHand();
+
+                // 更新按钮状态
+                document.getElementById('draw-card-btn').disabled = 
+                    gameState.currentPlayer !== '玩家' || (gameState.player.drawPile || []).length === 0;
+                document.getElementById('end-turn-btn').disabled = 
+                    gameState.currentPlayer !== '玩家';
+            }
+
+            updateHand() {
+                const handArea = document.getElementById('hand-area');
+                handArea.innerHTML = '';
+                
+                const gameState = this.engine.getGameState();
+                
+                if (gameState && gameState.player && gameState.player.hand) {
+                    gameState.player.hand.forEach((card, index) => {
+                        const cardElement = this.createCardElement(card, index);
+                        handArea.appendChild(cardElement);
+                    });
+                }
+            }
+
+            createCardElement(card, index) {
+                const cardElement = document.createElement('div');
+                cardElement.className = `card ${card.rarity || 'common'}`;
+                cardElement.dataset.cardIndex = index;
+                
+                const gameState = this.engine.getGameState();
+                const isPlayable = gameState && gameState.player && this.engine.canPlayCard(card, gameState.player);
+                
+                if (isPlayable) {
+                    cardElement.classList.add('playable');
+                } else {
+                    cardElement.classList.add('unplayable');
+                }
+                
+                // 卡牌内容
+                cardElement.innerHTML = `
+                    <div class="card-cost">${card.cost}</div>
+                    <div class="card-type">${this.getCardTypeSymbol(card.type)}</div>
+                    <div class="card-name">${card.name}</div>
+                    <div class="card-description">${card.description}</div>
+                    ${card.damage ? `<div class="card-effect">💥 ${card.damage}</div>` : ''}
+                    ${card.block ? `<div class="card-effect">🛡️ ${card.block}</div>` : ''}
+                    ${card.heal ? `<div class="card-effect">💚 ${card.heal}</div>` : ''}
+                `;
+                
+                // 点击事件
+                cardElement.addEventListener('click', () => {
+                    if (isPlayable) {
+                        this.playCard(index);
+                    }
+                });
+                
+                return cardElement;
+            }
+
+            getCardTypeSymbol(type) {
+                switch (type) {
+                    case 'attack':
+                        return '⚔️';
+                    case 'skill':
+                        return '💡';
+                    case 'power':
+                        return '⚡️';
+                    case '能力':
+                        return '⚡️';
+                    case '诅咒':
+                        return '💀';
+                    default:
+                        return '';
+                }
+            }
+
+            playCard(index) {
+                const gameState = this.engine.getGameState();
+                const card = gameState.player.hand[index];
+                const target = card.target === 'enemy' ? gameState.enemy : gameState.player;
+                
+                if (this.engine.playCard(index, gameState.player, target)) {
+                    // 卡牌成功打出
+                }
+            }
+
+            addLog(message, type = 'system') {
+                const combatLog = document.getElementById('combat-log');
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.textContent = message;
+                combatLog.appendChild(logEntry);
+                combatLog.scrollTop = combatLog.scrollHeight;
+                
+                // 限制日志条数
+                while (combatLog.children.length > 50) {
+                    combatLog.removeChild(combatLog.firstChild);
+                }
+            }
+
+            showGameOver(victory) {
+                const modal = document.getElementById('game-over-modal');
+                const title = document.getElementById('game-over-title');
+                const message = document.getElementById('game-over-message');
+                
+                title.textContent = victory ? '🎉 胜利！' : '😔 失败';
+                message.textContent = victory ? '恭喜你击败了所有敌人！' : '敌人击败了你，再接再厉！';
+                
+                modal.style.display = 'flex';
+            }
+
+            restartGame() {
+                location.reload();
+            }
+        }
+
+        // 启动游戏
+        const game = new SlayTheSpireGame();
+
+        // 全局重新开始函数
+        window.restartGame = function() {
+            location.reload();
+        };
+    </script>
+</body>
+</html>

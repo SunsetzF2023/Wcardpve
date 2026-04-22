@@ -1,0 +1,39 @@
+{
+  "name": "card-battle-arena",
+  "version": "1.0.0",
+  "description": "A modern, component-based strategic card battle game",
+  "main": "public/index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "live-server --port=8000 --open=/public/index.html",
+    "build": "echo 'No build step required - static files ready for deployment'",
+    "deploy": "echo 'Ready for GitHub Pages deployment'",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.js"
+  },
+  "keywords": [
+    "card-game",
+    "strategic-game",
+    "javascript",
+    "es6",
+    "component-based",
+    "github-pages"
+  ],
+  "author": "SunsetzF2023",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^2.8.0",
+    "live-server": "^1.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SunsetzF2023/Wcardpve.git"
+  },
+  "homepage": "https://sunsetzf2023.github.io/Wcardpve",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
